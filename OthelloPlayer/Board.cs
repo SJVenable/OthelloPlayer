@@ -81,6 +81,7 @@ namespace OthelloPlayer
                             {
                                 discsToTurn.Add(item);
                             }
+                            tempDiscsToTurn = new List<coordinate>();
                             i = 8;
                         }
                         if (i < 8)
@@ -99,9 +100,43 @@ namespace OthelloPlayer
             //checked horizontal right
 
             //check horizontal left
+            if ((column - 2) > -1)
+            {
+                if (BoardState[row, column - 1] == "W")
+                {
+                    tempDiscsToTurn.Add(new coordinate(row, (column - 1)));
+                    for (int i = column - 2; i > -1; i--)
+                    {
+                        if (BoardState[row, i] == "W")
+                        {
+                            tempDiscsToTurn.Add(new coordinate(row, i));
+                            //add them to temporary list
+                        }
+                        if (BoardState[row, i] == "B")
+                        {
+                            foreach (var item in tempDiscsToTurn)
+                            {
+                                discsToTurn.Add(item);
+                            }
+                            tempDiscsToTurn = new List<coordinate>();
+                            i = -1;
+                        }
+                        if (i > -1)
+                        {
+                            if (BoardState[row, i] == " ")
+                            {
+                                i = -1;
+                                tempDiscsToTurn = new List<coordinate>();
+                                //removes coordinates from the list as not a valid flank
+                            }
+                        }
+                    }
+                }
+            }
+
 
             //flip counters
-            if(flip)
+            if (flip)
             {
                 BoardState[row, column] = "B";
                 foreach (var item in discsToTurn)
