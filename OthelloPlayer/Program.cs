@@ -59,12 +59,12 @@ namespace OthelloPlayer
                     row = int.Parse(Console.ReadLine()) - 1;
                     if (board.checkValidMove(ref board, PlayerTurn, row, column))
                     {
-                        board.placeCounter(true, column, row);
+                        board.placeCounter(ref board, true, row, column);
                     }
 
                     Console.Clear();
                     board.displayBoard();
-                    Console.WriteLine("You turned over ... counters!");
+                    Console.WriteLine("AI's turn... ");
                     //PlayerTurn = false;
                     Console.ReadKey();
 
