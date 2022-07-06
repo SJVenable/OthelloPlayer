@@ -50,6 +50,9 @@ namespace OthelloPlayer
             {
                 if (PlayerTurn)
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Player One (Black)'s turn...");
+                    Console.ForegroundColor = ConsoleColor.White;
 
                     Console.WriteLine("Where would you like to place your counter?");
 
@@ -59,13 +62,20 @@ namespace OthelloPlayer
                     row = int.Parse(Console.ReadLine()) - 1;
                     if (board.checkValidMove(ref board, PlayerTurn, row, column))
                     {
-                        board.placeCounter(ref board, true, row, column);
+                        board.placeCounter(ref board, PlayerTurn, row, column);
                     }
 
                     Console.Clear();
                     board.displayBoard();
-                    Console.WriteLine("AI's turn... ");
                     PlayerTurn = false;
+                }
+
+                else
+                {
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Player Two (White)'s turn...");
+                    Console.ForegroundColor = ConsoleColor.White;
                     Console.Write("Enter column: ");
                     column = int.Parse(Console.ReadLine()) - 1;
                     Console.Write("Enter row: ");
@@ -74,14 +84,15 @@ namespace OthelloPlayer
                     {
                         board.placeCounter(ref board, PlayerTurn, row, column);
                     }
+                    Console.Clear();
+                    board.displayBoard();
                     Console.ReadKey();
+                    PlayerTurn = true;
 
                 }
 
-                // else call ai move
+                
             }
-
-        }
 
         }
 
@@ -124,6 +135,5 @@ namespace OthelloPlayer
 
 
         }
-        
     }
 }

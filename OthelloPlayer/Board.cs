@@ -110,17 +110,17 @@ namespace OthelloPlayer
             //check horizontal left
             if ((column - 2) > -1)
             {
-                if (BoardState[row, column - 1] == "W")
+                if (BoardState[row, column - 1] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row, (column - 1)));
                     for (int i = column - 2; i > -1; i--)
                     {
-                        if (BoardState[row, i] == "W")
+                        if (BoardState[row, i] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(row, i));
                             //add them to temporary list
                         }
-                        if (BoardState[row, i] == "B")
+                        if (BoardState[row, i] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -145,17 +145,17 @@ namespace OthelloPlayer
             //check up:
             if ((row - 2) > -1)
             {
-                if (BoardState[row - 1, column] == "W")
+                if (BoardState[row - 1, column] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row - 1, column));
                     for (int i = row - 2; i > -1; i--)
                     {
-                        if (BoardState[i, column] == "W")
+                        if (BoardState[i, column] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(i, column));
                             //add them to temporary list
                         }
-                        if (BoardState[i, column] == "B")
+                        if (BoardState[i, column] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -180,17 +180,17 @@ namespace OthelloPlayer
             //check down:
             if ((row + 2) < 8)
             {
-                if (BoardState[row + 1, column] == "W")
+                if (BoardState[row + 1, column] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row + 1, column));
                     for (int i = row + 2; i < 8; i++)
                     {
-                        if (BoardState[i, column] == "W")
+                        if (BoardState[i, column] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(i, column));
                             //add them to temporary list
                         }
-                        if (BoardState[i, column] == "B")
+                        if (BoardState[i, column] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -215,17 +215,17 @@ namespace OthelloPlayer
             //Check SE diagonal:
             if (((row + 2) < 8) && ((column + 2) < 8))
             {
-                if (BoardState[row + 1, column + 1] == "W")
+                if (BoardState[row + 1, column + 1] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row + 1, column + 1));
                     for (int i = 2; row + i < 8 && column + i < 8; i++)
                     {
-                        if (BoardState[row + i, column + i] == "W")
+                        if (BoardState[row + i, column + i] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(row + i, column + i));
                             //add them to temporary list
                         }
-                        if (BoardState[row + i, column + i] == "B")
+                        if (BoardState[row + i, column + i] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -250,17 +250,17 @@ namespace OthelloPlayer
             //Check NW diagonal:
             if (((row - 2) > -1) && ((column - 2) > -1))
             {
-                if (BoardState[row - 1, column - 1] == "W")
+                if (BoardState[row - 1, column - 1] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row - 1, column - 1));
                     for (int i = 2; row - i > -1 && column - i > -1; i++)
                     {
-                        if (BoardState[row - i, column - i] == "W")
+                        if (BoardState[row - i, column - i] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(row - i, column - i));
                             //add them to temporary list
                         }
-                        if (BoardState[row - i, column - i] == "B")
+                        if (BoardState[row - i, column - i] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -285,17 +285,17 @@ namespace OthelloPlayer
             //Check NE diagonal:
             if (((row - 2) > -1) && ((column + 2) < 8))
             {
-                if (BoardState[row - 1, column + 1] == "W")
+                if (BoardState[row - 1, column + 1] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row - 1, column + 1));
                     for (int i = 2; row - i > -1 && column + i < 8; i++)
                     {
-                        if (BoardState[row - i, column + i] == "W")
+                        if (BoardState[row - i, column + i] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(row - i, column + i));
                             //add them to temporary list
                         }
-                        if (BoardState[row - i, column + i] == "B")
+                        if (BoardState[row - i, column + i] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -320,17 +320,17 @@ namespace OthelloPlayer
             //Check SW diagonal
             if (((column - 2) > -1) && ((row + 2) < 8))
             {
-                if (BoardState[row + 1, column - 1] == "W")
+                if (BoardState[row + 1, column - 1] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row + 1, column - 1));
                     for (int i = 2; column - i > -1 && row + i < 8; i++)
                     {
-                        if (BoardState[row + i, column - i] == "W")
+                        if (BoardState[row + i, column - i] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(row + i, column - i));
                             //add them to temporary list
                         }
-                        if (BoardState[row + i, column - i] == "B")
+                        if (BoardState[row + i, column - i] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -354,13 +354,14 @@ namespace OthelloPlayer
             //Checked SW diagonal
             //CHECKED ALL DIRECTIONS
 
+
             //flip counters
             if (flip)
             {
-                BoardState[row, column] = "B";
+                BoardState[row, column] = myColour;
                 foreach (var item in discsToTurn)
                 {
-                    BoardState[item.row, item.column] = "B";
+                    BoardState[item.row, item.column] = myColour;
                 }
             }
             return discsToTurn;
@@ -413,7 +414,8 @@ namespace OthelloPlayer
             Console.WriteLine("    ------------------------------------------------");
             Console.WriteLine(" 8 |  {0}  |  {1}  |  {2}  |  {3}  |  {4}  |  {5}  |  {6}  |  {7}  |", BoardState[7, 0], BoardState[7, 1], BoardState[7, 2], BoardState[7, 3], BoardState[7, 4], BoardState[7, 5], BoardState[7, 6], BoardState[7, 7]);
             Console.WriteLine("    ------------------------------------------------");
-            
+
+            Console.BackgroundColor = ConsoleColor.Black;
         }
 
     }
