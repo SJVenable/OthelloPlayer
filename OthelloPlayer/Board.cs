@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,12 +30,9 @@ namespace OthelloPlayer
 
         public void placeCounter(ref Board board, bool PlayerTurn, int row, int column)
         {
-            if(PlayerTurn)
-            {
-                turnCountersForPlayer(ref board, row, column, true);
-            }
-            else BoardState[row, column] = "W";
-            //add version to flip white counters (AI turn)
+            
+            turnCountersForPlayer(ref board, row, column, true, PlayerTurn);
+
         }
 
         public  bool checkValidMove(ref Board board, bool PlayerTurn, int row, int column)
@@ -45,37 +42,49 @@ namespace OthelloPlayer
                 Console.WriteLine("already a counter here!");
                 return false;
             }
-            if (PlayerTurn)
+            
+            if (turnCountersForPlayer(ref board, row, column, false, PlayerTurn).Count != 0)
             {
-                if (turnCountersForPlayer(ref board, row, column, false).Count != 0)
-                {
-                    return true;
-                }
-                return false;
+                return true;
             }
             return false;
+            
             //else do same for turnCountersForAI
         }
         
-        public static List<coordinate> turnCountersForPlayer(ref Board board, int row, int column, bool flip)
+        //trying to make it work for AI turn too, added bool PlayerTurn
+        public static List<coordinate> turnCountersForPlayer(ref Board board, int row, int column, bool flip, bool PlayerTurn)
         {
             List<coordinate> discsToTurn = new List<coordinate>();
             List<coordinate> tempDiscsToTurn = new List<coordinate>();
 
+            string myColour;
+            string notMyColour;
+            if (PlayerTurn)
+            {
+                myColour = "B";
+                notMyColour = "W";
+            }
+            else
+            {
+                myColour = "W";
+                notMyColour = "B";
+            }
+
             //check horizontal right:
             if((column + 2) < 7)
             {
-                if (BoardState[row, column + 1] == "W")
+                if (BoardState[row, column + 1] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row, (column + 1)));
                     for (int i = column + 2; i < 7; i++)
                     {
-                        if (BoardState[row, i] == "W")
+                        if (BoardState[row, i] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(row, i));
                             //add them to temporary list
                         }
-                        if(BoardState[row, i] == "B")
+                        if(BoardState[row, i] == myColour)
                         {
                             foreach(var item in tempDiscsToTurn)
                             {
@@ -358,7 +367,6 @@ namespace OthelloPlayer
 
         }
 
-
         public static bool isFull(ref Board board)
         {
             return false;
@@ -374,10 +382,13 @@ namespace OthelloPlayer
                     BoardState[i, a] = " ";
                 }
             }
-            BoardState[3, 3] = "W";
+            BoardState[3, 3] = "W"; // should be W
+            BoardState[4, 4] = "W"; // should be W
+            BoardState[4, 3] = "B"; // should be B
+            BoardState[3, 4] = "B"; // should be B
+
             BoardState[4, 4] = "W";
-            BoardState[4, 3] = "B";
-            BoardState[3, 4] = "B";
+            BoardState[2, 2] = "W";
 
         }
 
