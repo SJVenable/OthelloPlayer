@@ -65,13 +65,23 @@ namespace OthelloPlayer
                     Console.Clear();
                     board.displayBoard();
                     Console.WriteLine("AI's turn... ");
-                    //PlayerTurn = false;
+                    PlayerTurn = false;
+                    Console.Write("Enter column: ");
+                    column = int.Parse(Console.ReadLine()) - 1;
+                    Console.Write("Enter row: ");
+                    row = int.Parse(Console.ReadLine()) - 1;
+                    if (board.checkValidMove(ref board, PlayerTurn, row, column))
+                    {
+                        board.placeCounter(ref board, PlayerTurn, row, column);
+                    }
                     Console.ReadKey();
 
                 }
 
                 // else call ai move
             }
+
+        }
 
         }
 
