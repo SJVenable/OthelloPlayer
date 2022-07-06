@@ -96,7 +96,6 @@ namespace OthelloPlayer
                     }
                 }
             }
-
             //checked horizontal right
 
             //check horizontal left
@@ -133,7 +132,218 @@ namespace OthelloPlayer
                     }
                 }
             }
-
+            //checked horizontal left.
+            //check up:
+            if ((row - 2) > -1)
+            {
+                if (BoardState[row - 1, column] == "W")
+                {
+                    tempDiscsToTurn.Add(new coordinate(row - 1, column));
+                    for (int i = row - 2; i > -1; i--)
+                    {
+                        if (BoardState[i, column] == "W")
+                        {
+                            tempDiscsToTurn.Add(new coordinate(i, column));
+                            //add them to temporary list
+                        }
+                        if (BoardState[i, column] == "B")
+                        {
+                            foreach (var item in tempDiscsToTurn)
+                            {
+                                discsToTurn.Add(item);
+                            }
+                            tempDiscsToTurn = new List<coordinate>();
+                            i = -1;
+                        }
+                        if (i > -1)
+                        {
+                            if (BoardState[i, column] == " ")
+                            {
+                                i = -1;
+                                tempDiscsToTurn = new List<coordinate>();
+                                //removes coordinates from the list as not a valid flank
+                            }
+                        }
+                    }
+                }
+            }
+            //checked up.
+            //check down:
+            if ((row + 2) < 8)
+            {
+                if (BoardState[row + 1, column] == "W")
+                {
+                    tempDiscsToTurn.Add(new coordinate(row + 1, column));
+                    for (int i = row + 2; i < 8; i++)
+                    {
+                        if (BoardState[i, column] == "W")
+                        {
+                            tempDiscsToTurn.Add(new coordinate(i, column));
+                            //add them to temporary list
+                        }
+                        if (BoardState[i, column] == "B")
+                        {
+                            foreach (var item in tempDiscsToTurn)
+                            {
+                                discsToTurn.Add(item);
+                            }
+                            tempDiscsToTurn = new List<coordinate>();
+                            i = 8;
+                        }
+                        if (i < 8)
+                        {
+                            if (BoardState[i, column] == " ")
+                            {
+                                i = 8;
+                                tempDiscsToTurn = new List<coordinate>();
+                                //removes coordinates from the list as not a valid flank
+                            }
+                        }
+                    }
+                }
+            }
+            //Checked down.
+            //Check SE diagonal:
+            if (((row + 2) < 8) && ((column + 2) < 8))
+            {
+                if (BoardState[row + 1, column + 1] == "W")
+                {
+                    tempDiscsToTurn.Add(new coordinate(row + 1, column + 1));
+                    for (int i = 2; row + i < 8 && column + i < 8; i++)
+                    {
+                        if (BoardState[row + i, column + i] == "W")
+                        {
+                            tempDiscsToTurn.Add(new coordinate(row + i, column + i));
+                            //add them to temporary list
+                        }
+                        if (BoardState[row + i, column + i] == "B")
+                        {
+                            foreach (var item in tempDiscsToTurn)
+                            {
+                                discsToTurn.Add(item);
+                            }
+                            tempDiscsToTurn = new List<coordinate>();
+                            i = 8;
+                        }
+                        if (i < 8)
+                        {
+                            if (BoardState[row + i, column + i] == " ")
+                            {
+                                i = 8;
+                                tempDiscsToTurn = new List<coordinate>();
+                                //removes coordinates from the list as not a valid flank
+                            }
+                        }
+                    }
+                }
+            }
+            //Checked SE diagonal
+            //Check NW diagonal:
+            if (((row - 2) > -1) && ((column - 2) > -1))
+            {
+                if (BoardState[row - 1, column - 1] == "W")
+                {
+                    tempDiscsToTurn.Add(new coordinate(row - 1, column - 1));
+                    for (int i = 2; row - i > -1 && column - i > -1; i++)
+                    {
+                        if (BoardState[row - i, column - i] == "W")
+                        {
+                            tempDiscsToTurn.Add(new coordinate(row - i, column - i));
+                            //add them to temporary list
+                        }
+                        if (BoardState[row - i, column - i] == "B")
+                        {
+                            foreach (var item in tempDiscsToTurn)
+                            {
+                                discsToTurn.Add(item);
+                            }
+                            tempDiscsToTurn = new List<coordinate>();
+                            i = 8;
+                        }
+                        if (row - i > -1)
+                        {
+                            if (BoardState[row - i, column - i] == " ")
+                            {
+                                i = 8;
+                                tempDiscsToTurn = new List<coordinate>();
+                                //removes coordinates from the list as not a valid flank
+                            }
+                        }
+                    }
+                }
+            }
+            //Checked NW diagonal.
+            //Check NE diagonal:
+            if (((row - 2) > -1) && ((column + 2) < 8))
+            {
+                if (BoardState[row - 1, column + 1] == "W")
+                {
+                    tempDiscsToTurn.Add(new coordinate(row - 1, column + 1));
+                    for (int i = 2; row - i > -1 && column + i < 8; i++)
+                    {
+                        if (BoardState[row - i, column + i] == "W")
+                        {
+                            tempDiscsToTurn.Add(new coordinate(row - i, column + i));
+                            //add them to temporary list
+                        }
+                        if (BoardState[row - i, column + i] == "B")
+                        {
+                            foreach (var item in tempDiscsToTurn)
+                            {
+                                discsToTurn.Add(item);
+                            }
+                            tempDiscsToTurn = new List<coordinate>();
+                            i = 8;
+                        }
+                        if (row - i > -1)
+                        {
+                            if (BoardState[row - i, column + i] == " ")
+                            {
+                                i = 8;
+                                tempDiscsToTurn = new List<coordinate>();
+                                //removes coordinates from the list as not a valid flank
+                            }
+                        }
+                    }
+                }
+            }
+            //Checked NE diagonal
+            //Check SW diagonal
+            if (((column - 2) > -1) && ((row + 2) < 8))
+            {
+                if (BoardState[row + 1, column - 1] == "W")
+                {
+                    tempDiscsToTurn.Add(new coordinate(row + 1, column - 1));
+                    for (int i = 2; column - i > -1 && row + i < 8; i++)
+                    {
+                        if (BoardState[row + i, column - i] == "W")
+                        {
+                            tempDiscsToTurn.Add(new coordinate(row + i, column - i));
+                            //add them to temporary list
+                        }
+                        if (BoardState[row + i, column - i] == "B")
+                        {
+                            foreach (var item in tempDiscsToTurn)
+                            {
+                                discsToTurn.Add(item);
+                            }
+                            tempDiscsToTurn = new List<coordinate>();
+                            i = 8;
+                        }
+                        if (row + i < 8)
+                        {
+                            if (BoardState[row + i, column - i] == " ")
+                            {
+                                i = 8;
+                                tempDiscsToTurn = new List<coordinate>();
+                                //removes coordinates from the list as not a valid flank
+                            }
+                        }
+                    }
+                }
+            }
+            //Checked SW diagonal
+            //CHECKED ALL DIRECTIONS
 
             //flip counters
             if (flip)
@@ -147,6 +357,7 @@ namespace OthelloPlayer
             return discsToTurn;
 
         }
+
 
         public static bool isFull(ref Board board)
         {
