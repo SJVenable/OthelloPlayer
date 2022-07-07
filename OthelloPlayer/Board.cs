@@ -31,7 +31,7 @@ namespace OthelloPlayer
         public void placeCounter(ref Board board, bool PlayerTurn, int row, int column)
         {
             
-            turnCountersForPlayer(ref board, row, column, true, PlayerTurn);
+            turnCounters(ref board, row, column, true, PlayerTurn);
 
         }
 
@@ -39,21 +39,85 @@ namespace OthelloPlayer
         {
             if (BoardState[row, column] != " ")
             {
-                Console.WriteLine("already a counter here!");
                 return false;
             }
             
-            if (turnCountersForPlayer(ref board, row, column, false, PlayerTurn).Count != 0)
+            if (turnCounters(ref board, row, column, false, PlayerTurn).Count != 0)
             {
                 return true;
             }
             return false;
             
-            //else do same for turnCountersForAI
         }
-        
+
+        public static bool isFull(ref Board board)
+        {
+            //loop through values in board:
+            for (int i = 0; i < 7; i++)
+            {
+                for (int a = 0; a < 7; a++)
+                {
+
+                    if (turnCounters(ref board, i, a, false, true).Count != 0)
+                    {
+                        return false;
+                    }
+                    if (turnCounters(ref board, i, a, false, false).Count != 0)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public static bool canPlaceCounter(ref Board board, bool PlayerTurn)
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                for (int a = 0; a < 7; a++)
+                {
+                    if (board.checkValidMove(ref board, PlayerTurn, i, a))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public static string checkWinner(ref Board board)
+        {
+            int onePoints = 0;
+            int twoPoints = 0;
+            for (int i = 0; i < 7; i++)
+            {
+                for (int a = 0; a < 7; a++)
+                {
+                    if(BoardState[i, a] == "B")
+                    {
+                        onePoints++;
+                    }
+                    if (BoardState[i, a] == "W")
+                    {
+                        twoPoints++;
+                    }
+                    
+                }
+            }
+            if(onePoints > twoPoints)
+            {
+                return "Player One! Congratulations!";
+            }
+            if (onePoints < twoPoints)
+            {
+                return "Player Two! Congratulations!";
+            }
+            else return "Nobody, it was a draw!";
+        }
+
         //trying to make it work for AI turn too, added bool PlayerTurn
-        public static List<coordinate> turnCountersForPlayer(ref Board board, int row, int column, bool flip, bool PlayerTurn)
+        public static List<coordinate> turnCounters(ref Board board, int row, int column, bool flip, bool PlayerTurn)
         {
             List<coordinate> discsToTurn = new List<coordinate>();
             List<coordinate> tempDiscsToTurn = new List<coordinate>();
@@ -368,10 +432,9 @@ namespace OthelloPlayer
 
         }
 
-        public static bool isFull(ref Board board)
-        {
-            return false;
-        }
+        
+
+        
 
 
         public void setUpBoard()
@@ -388,8 +451,6 @@ namespace OthelloPlayer
             BoardState[4, 3] = "B"; // should be B
             BoardState[3, 4] = "B"; // should be B
 
-            BoardState[4, 4] = "W";
-            BoardState[2, 2] = "W";
 
         }
 

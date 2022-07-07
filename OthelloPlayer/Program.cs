@@ -54,45 +54,91 @@ namespace OthelloPlayer
                     Console.WriteLine("Player One (Black)'s turn...");
                     Console.ForegroundColor = ConsoleColor.White;
 
-                    Console.WriteLine("Where would you like to place your counter?");
 
-                    Console.Write("Enter column: ");
-                    column = int.Parse(Console.ReadLine()) - 1;
-                    Console.Write("Enter row: ");
-                    row = int.Parse(Console.ReadLine()) - 1;
-                    if (board.checkValidMove(ref board, PlayerTurn, row, column))
+                    if (Board.canPlaceCounter(ref board, PlayerTurn))
                     {
-                        board.placeCounter(ref board, PlayerTurn, row, column);
-                    }
+                        do
+                        {
+                            Console.WriteLine("Where would you like to place your counter?");
+                            Console.Write("Enter column: ");
+                            column = int.Parse(Console.ReadLine()) - 1;
+                            Console.Write("Enter row: ");
+                            row = int.Parse(Console.ReadLine()) - 1;
+                            if (!board.checkValidMove(ref board, PlayerTurn, row, column))
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("Cannot place here! Try again");
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
 
-                    Console.Clear();
-                    board.displayBoard();
+
+
+                        } while (!board.checkValidMove(ref board, PlayerTurn, row, column));
+                        board.placeCounter(ref board, PlayerTurn, row, column);
+                        Console.Clear();
+                        board.displayBoard();
+                    }
+                    else
+                    {
+
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Player 1 can't go anywhere! Go skipped...");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        
+                    }
                     PlayerTurn = false;
                 }
 
                 else
                 {
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Player Two (White)'s turn...");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write("Enter column: ");
-                    column = int.Parse(Console.ReadLine()) - 1;
-                    Console.Write("Enter row: ");
-                    row = int.Parse(Console.ReadLine()) - 1;
-                    if (board.checkValidMove(ref board, PlayerTurn, row, column))
-                    {
+                    if (Board.canPlaceCounter(ref board, PlayerTurn)) {
+
+
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Player Two (White)'s turn...");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        do
+                        {
+
+                            Console.Write("Enter column: ");
+                            column = int.Parse(Console.ReadLine()) - 1;
+                            Console.Write("Enter row: ");
+                            row = int.Parse(Console.ReadLine()) - 1;
+
+                            if (!board.checkValidMove(ref board, PlayerTurn, row, column))
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("Cannot place here! Try again");
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
+                        } while (!board.checkValidMove(ref board, PlayerTurn, row, column));
                         board.placeCounter(ref board, PlayerTurn, row, column);
+                        Console.Clear();
+                        board.displayBoard();
+                        
                     }
-                    Console.Clear();
-                    board.displayBoard();
-                    Console.ReadKey();
+
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Player 2 can't go anywhere! Go skipped...");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        
+                    }
                     PlayerTurn = true;
 
                 }
 
                 
             }
+            Console.WriteLine("GAME OVER, winner was...");
+            System.Threading.Thread.Sleep(3000);
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(Board.checkWinner(ref board));
+
+            Console.ReadKey();
 
         }
 
