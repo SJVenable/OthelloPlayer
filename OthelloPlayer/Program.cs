@@ -41,6 +41,14 @@ namespace OthelloPlayer
 
         }
 
+        public static int LetterToInt(char letter)
+        {
+            string strLetter = letter.ToString().ToUpper();
+            char UpperCaseChar = strLetter.ToCharArray()[0];
+
+            return UpperCaseChar - (int) 'A';
+        }
+
         public static void playGame(ref Board board)
         {
             bool PlayerTurn = true;
@@ -53,7 +61,7 @@ namespace OthelloPlayer
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Player One (Black)'s turn...");
                     Console.ForegroundColor = ConsoleColor.White;
-
+                    
 
                     if (Board.canPlaceCounter(ref board, PlayerTurn))
                     {
@@ -61,7 +69,7 @@ namespace OthelloPlayer
                         {
                             Console.WriteLine("Where would you like to place your counter?");
                             Console.Write("Enter column: ");
-                            column = int.Parse(Console.ReadLine()) - 1;
+                            column = LetterToInt(char.Parse(Console.ReadLine()));
                             Console.Write("Enter row: ");
                             row = int.Parse(Console.ReadLine()) - 1;
                             if (!board.checkValidMove(ref board, PlayerTurn, row, column))
@@ -103,7 +111,7 @@ namespace OthelloPlayer
                         {
 
                             Console.Write("Enter column: ");
-                            column = int.Parse(Console.ReadLine()) - 1;
+                            column = LetterToInt(char.Parse(Console.ReadLine()));
                             Console.Write("Enter row: ");
                             row = int.Parse(Console.ReadLine()) - 1;
 
@@ -145,7 +153,7 @@ namespace OthelloPlayer
         public static int displayMenu()
         {
             Console.WriteLine(" > Play Game");
-            Console.WriteLine("   Select diffuculty");
+            Console.WriteLine("   Select difficulty");
             Console.WriteLine("   Exit");
 
             ConsoleKeyInfo choice = Console.ReadKey(true);
