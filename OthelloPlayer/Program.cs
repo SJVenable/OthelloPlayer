@@ -56,6 +56,7 @@ namespace OthelloPlayer
             int column;
             while (!Board.isFull(ref board))
             {
+                //Carries out the players turn
                 if (PlayerTurn)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -100,6 +101,7 @@ namespace OthelloPlayer
                 else
                 {
 
+                    //Carries out the Player two's turn
                     if (Board.canPlaceCounter(ref board, PlayerTurn)) {
 
 

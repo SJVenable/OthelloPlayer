@@ -107,11 +107,11 @@ namespace OthelloPlayer
             }
             if(onePoints > twoPoints)
             {
-                return "Player One! Congratulations!";
+                return "Player One! (BLACK) Congratulations!";
             }
             if (onePoints < twoPoints)
             {
-                return "Player Two! Congratulations!";
+                return "Player Two! (WHITE) Congratulations!";
             }
             else return "Nobody, it was a draw!";
         }
