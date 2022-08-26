@@ -100,7 +100,6 @@ namespace OthelloPlayer
 
                 else
                 {
-
                     //Carries out the Player two's turn
                     if (Board.canPlaceCounter(ref board, PlayerTurn)) {
 

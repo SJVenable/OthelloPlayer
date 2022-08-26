@@ -37,6 +37,11 @@ namespace OthelloPlayer
 
         public  bool checkValidMove(ref Board board, bool PlayerTurn, int row, int column)
         {
+            if(row > 7 || row < 0 || column > 7 || column < 0)
+            {
+                return false;
+            }
+
             if (BoardState[row, column] != " ")
             {
                 return false;
@@ -454,11 +459,42 @@ namespace OthelloPlayer
 
         }
 
+        public int getBlackScore()
+        {
+            int black = 0;
+            foreach(var item in BoardState)
+            {
+                if(item == "B")
+                {
+                    black++;
+                }
+            }
+            return black;
+
+        }
+        public int getWhiteScore()
+        {
+            int white = 0;
+            foreach (var item in BoardState)
+            {
+                if (item == "W")
+                {
+                    white++;
+                }
+            }
+            return white;
+
+        }
+
         public void displayBoard()
         {
 
             Console.BackgroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine("    - A --- B --- C --- D --- E --- F --- G --- H --");
+            Console.Write("    - A --- B --- C --- D --- E --- F --- G --- H --");
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.Write("  SCORES:");
+            Console.WriteLine();
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
             for (int i = 1; i < 9; i++)
             {
                 Console.Write(" " + i + " |");
@@ -484,9 +520,25 @@ namespace OthelloPlayer
 
                     Console.Write("  |");
 
+
                 }
-                Console.WriteLine();
-                Console.WriteLine("    ------------------------------------------------");
+                if(i == 1)
+                {
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.Write(" Black: " + getBlackScore());
+                    Console.BackgroundColor = ConsoleColor.DarkGreen;
+                    Console.WriteLine();
+                    Console.Write("    ------------------------------------------------");
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.WriteLine(" White: " + getWhiteScore());
+                    Console.BackgroundColor = ConsoleColor.DarkGreen;
+
+                }
+                else {
+                    Console.WriteLine();
+                    Console.WriteLine("    ------------------------------------------------");
+                }
+                
 
 
             }
