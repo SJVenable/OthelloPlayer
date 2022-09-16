@@ -35,7 +35,7 @@ namespace OthelloPlayer
 
         }
 
-        public  bool checkValidMove(ref Board board, bool PlayerTurn, int row, int column)
+        public static bool checkValidMove(ref Board board, bool PlayerTurn, int row, int column)
         {
             if(row > 7 || row < 0 || column > 7 || column < 0)
             {
@@ -82,7 +82,7 @@ namespace OthelloPlayer
             {
                 for (int a = 0; a < 7; a++)
                 {
-                    if (board.checkValidMove(ref board, PlayerTurn, i, a))
+                    if (Board.checkValidMove(ref board, PlayerTurn, i, a))
                     {
                         return true;
                     }
@@ -121,7 +121,6 @@ namespace OthelloPlayer
             else return "Nobody, it was a draw!";
         }
 
-        //trying to make it work for AI turn too, added bool PlayerTurn
         public static List<coordinate> turnCounters(ref Board board, int row, int column, bool flip, bool PlayerTurn)
         {
             List<coordinate> discsToTurn = new List<coordinate>();
@@ -427,10 +426,19 @@ namespace OthelloPlayer
             //flip counters
             if (flip)
             {
-                BoardState[row, column] = myColour;
+                
+
+                string flipToColour;
+                if (PlayerTurn)
+                {
+                    flipToColour = "B";
+                }
+                else flipToColour = "R";
+                BoardState[row, column] = flipToColour;
                 foreach (var item in discsToTurn)
                 {
-                    BoardState[item.row, item.column] = myColour;
+                    //R for recently placed/flipped
+                    BoardState[item.row, item.column] = flipToColour;
                 }
             }
             return discsToTurn;
@@ -486,6 +494,8 @@ namespace OthelloPlayer
 
         }
 
+        private bool secondTimeBoard = false;
+
         public void displayBoard()
         {
 
@@ -495,6 +505,9 @@ namespace OthelloPlayer
             Console.Write("  SCORES:");
             Console.WriteLine();
             Console.BackgroundColor = ConsoleColor.DarkGreen;
+
+            List<coordinate> recentlyFlipped = new List<coordinate>();
+
             for (int i = 1; i < 9; i++)
             {
                 Console.Write(" " + i + " |");
@@ -511,6 +524,14 @@ namespace OthelloPlayer
                     {
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.Write("  █");
+
+                    }
+                    else if (BoardState[i-1, a] == "R")
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
+                        Console.Write("  █");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        recentlyFlipped.Add(new coordinate(i - 1, a));
 
                     }
                     else
@@ -538,12 +559,31 @@ namespace OthelloPlayer
                     Console.WriteLine();
                     Console.WriteLine("    ------------------------------------------------");
                 }
-                
-
-
             }
 
             Console.BackgroundColor = ConsoleColor.Black;
+
+            if(recentlyFlipped.Count != 0)
+            {
+                if (secondTimeBoard == false)
+                {
+                    System.Threading.Thread.Sleep(2000);
+                    foreach (var item in recentlyFlipped)
+                    {
+                        BoardState[item.row, item.column] = "W";
+                    }
+                    recentlyFlipped.Clear();
+                    secondTimeBoard = true;
+                }
+            }
+            
+            if(secondTimeBoard == true)
+            {
+                secondTimeBoard = false;
+                Console.Clear();
+                displayBoard();
+            }
+            
 
 
         }

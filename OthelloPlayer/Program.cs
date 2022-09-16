@@ -9,6 +9,7 @@ namespace OthelloPlayer
     class Program
     {
 
+        public static string difficulty = "Amateur";
 
 
         static void Main(string[] args)
@@ -19,25 +20,93 @@ namespace OthelloPlayer
             Board gameBoard = new Board();
 
             //returns a menu option which sends you down one of three switch statements.
-            switch (displayMenu())
+            int menuOption = displayMenu();
+            
+            while(menuOption != 1)
             {
-                case 1:
-                    Console.Clear();
-                    gameBoard.displayBoard();
-                    playGame(ref gameBoard);
-                    break;
-                case 2:
-                    Console.Clear();
-                    Console.WriteLine(" Difficulties:");
-                    Console.ReadKey();
-                    break;
-                case 3:
-                    Console.Clear();
-                    Console.WriteLine("Thanks for Playing!");
-                    break;
+                switch (menuOption)
+                {
+                    case 2:
+                        Console.Clear();
+                        displayDifficulty();
+                        Console.Clear();
+                        menuOption = displayMenu();
+                        break;
+                    case 3:
+                        Console.Clear();
+                        Console.WriteLine("Thanks for Playing!");
+                        break;
+                }
 
             }
+            Console.Clear();
+            gameBoard.displayBoard();
+            playGame(ref gameBoard);
 
+        }
+
+        public static void displayDifficulty()
+        {
+            Console.WriteLine(" Select Difficulty: ");
+            Console.WriteLine(" > Amateur");
+            Console.WriteLine("   Professional");
+            Console.WriteLine("   Exit to Menu");
+            Console.WriteLine("   Currently: " + difficulty);
+
+
+            ConsoleKeyInfo choice = Console.ReadKey(true);
+            int option = 1;
+
+            while (!(choice.Key == ConsoleKey.Enter && option == 3))
+            {
+
+                if (choice.Key == ConsoleKey.Enter)
+                {
+                    switch (option)
+                    {
+                        case 1:
+                            difficulty = "Amateur";
+                            Console.Clear();
+                            displayDifficulty();
+                            return;
+                            break;
+                        case 2:
+                            difficulty = "Professional";
+                            Console.Clear();
+                            displayDifficulty();
+                            return;
+                            break;
+
+
+                    }
+                }
+
+                if (choice.Key == ConsoleKey.UpArrow && option > 1)
+                {
+                    Console.CursorLeft = 0;
+                    Console.CursorTop = option;
+                    Console.Write("  ");
+                    Console.CursorTop = option - 1;
+                    Console.CursorLeft = 0;
+                    option--;
+                    Console.Write(" > ");
+                }
+                if (choice.Key == ConsoleKey.DownArrow && option < 3)
+                {
+                    Console.CursorLeft = 0;
+                    Console.CursorTop = option;
+                    Console.Write("  ");
+                    Console.CursorTop = option + 1;
+                    Console.CursorLeft = 0;
+                    option++;
+                    Console.Write(" > ");
+                }
+
+                choice = Console.ReadKey(true);
+            }
+
+
+            
 
         }
 
@@ -47,6 +116,14 @@ namespace OthelloPlayer
             char UpperCaseChar = strLetter.ToCharArray()[0];
 
             return UpperCaseChar - (int) 'A';
+        }
+
+        public static char intToLetter(int num)
+        {
+            num += (int)'A';
+            char UpperCaseChar = (char)num;
+
+            return UpperCaseChar;
         }
 
         public static void playGame(ref Board board)
@@ -62,27 +139,16 @@ namespace OthelloPlayer
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Player One (Black)'s turn...");
                     Console.ForegroundColor = ConsoleColor.White;
+
                     
 
                     if (Board.canPlaceCounter(ref board, PlayerTurn))
                     {
-                        do
-                        {
-                            Console.WriteLine("Where would you like to place your counter?");
-                            Console.Write("Enter column: ");
-                            column = LetterToInt(char.Parse(Console.ReadLine()));
-                            Console.Write("Enter row: ");
-                            row = int.Parse(Console.ReadLine()) - 1;
-                            if (!board.checkValidMove(ref board, PlayerTurn, row, column))
-                            {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("Cannot place here! Try again");
-                                Console.ForegroundColor = ConsoleColor.White;
-                            }
+                        Console.Write("Enter column: ");
+                        column = LetterToInt(char.Parse(Console.ReadLine()));
+                        Console.Write("Enter row: ");
+                        row = int.Parse(Console.ReadLine()) - 1;
 
-
-
-                        } while (!board.checkValidMove(ref board, PlayerTurn, row, column));
                         board.placeCounter(ref board, PlayerTurn, row, column);
                         Console.Clear();
                         board.displayBoard();
@@ -100,32 +166,42 @@ namespace OthelloPlayer
 
                 else
                 {
-                    //Carries out the Player two's turn
+                    //Carries out the AI's turn
                     if (Board.canPlaceCounter(ref board, PlayerTurn)) {
 
 
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Player Two (White)'s turn...");
+                        Console.WriteLine("AI (White)'s turn, thinking...");
+                        System.Threading.Thread.Sleep(1500);
                         Console.ForegroundColor = ConsoleColor.White;
 
-                        do
-                        {
-
-                            Console.Write("Enter column: ");
-                            column = LetterToInt(char.Parse(Console.ReadLine()));
-                            Console.Write("Enter row: ");
-                            row = int.Parse(Console.ReadLine()) - 1;
-
-                            if (!board.checkValidMove(ref board, PlayerTurn, row, column))
+                            Board.coordinate spotPick = new Board.coordinate(0, 0);
+                            if (difficulty == "Amateur")
                             {
-                                Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("Cannot place here! Try again");
-                                Console.ForegroundColor = ConsoleColor.White;
+                                List<Board.coordinate> possiblePlaces = new List<Board.coordinate>();
+                                for (int i = 0; i < 7; i++)
+                                {
+                                    for (int a = 0; a < 7; a++)
+                                    {
+                                        if (Board.checkValidMove(ref board, false, i, a))
+                                        {
+                                            possiblePlaces.Add(new Board.coordinate(i, a));
+                                        }
+                                    }
+                                }
+                                Random rnd = new Random();
+                                int pick = rnd.Next(0, possiblePlaces.Count);
+                            
+                                spotPick = possiblePlaces[pick];
                             }
-                        } while (!board.checkValidMove(ref board, PlayerTurn, row, column));
-                        board.placeCounter(ref board, PlayerTurn, row, column);
+
+
+                        board.placeCounter(ref board, PlayerTurn, spotPick.row, spotPick.column);
                         Console.Clear();
                         board.displayBoard();
+                        //fix numbers here
+                        Console.WriteLine("AI placed at (" + intToLetter(spotPick.row) + ", " + (spotPick.column + 1)+ "), the counters flipped turn yellow shortly.");
+
                         
                     }
 
