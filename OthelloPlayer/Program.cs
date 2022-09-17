@@ -129,8 +129,8 @@ namespace OthelloPlayer
         public static void playGame(ref Board board)
         {
             bool PlayerTurn = true;
-            int row;
-            int column;
+            int row = -1;
+            int column = -1;
             while (!Board.isFull(ref board))
             {
                 //Carries out the players turn
@@ -144,10 +144,23 @@ namespace OthelloPlayer
 
                     if (Board.canPlaceCounter(ref board, PlayerTurn))
                     {
-                        Console.Write("Enter column: ");
-                        column = LetterToInt(char.Parse(Console.ReadLine()));
-                        Console.Write("Enter row: ");
-                        row = int.Parse(Console.ReadLine()) - 1;
+                        int tries = 0;
+                        while (!Board.checkValidMove(ref board, true, row, column))
+                        {
+                            tries++;
+                            if (tries > 1)
+                            {
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("Please enter a correct column and row...");
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
+                            Console.Write("Enter column: ");
+                            column = LetterToInt(char.Parse(Console.ReadLine().Substring(0, 1)));
+                            Console.Write("Enter row: ");
+                            row = int.Parse(Console.ReadLine()) - 1;
+                            
+                        }
+                        
 
                         board.placeCounter(ref board, PlayerTurn, row, column);
                         Console.Clear();
@@ -175,32 +188,56 @@ namespace OthelloPlayer
                         System.Threading.Thread.Sleep(1500);
                         Console.ForegroundColor = ConsoleColor.White;
 
-                            Board.coordinate spotPick = new Board.coordinate(0, 0);
-                            if (difficulty == "Amateur")
+                        Board.coordinate spotPick = new Board.coordinate(0, 0);
+
+                        if (difficulty == "Amateur")
+                        {
+                            List<Board.coordinate> possiblePlaces = new List<Board.coordinate>();
+                            for (int i = 0; i < 7; i++)
                             {
-                                List<Board.coordinate> possiblePlaces = new List<Board.coordinate>();
-                                for (int i = 0; i < 7; i++)
+                                for (int a = 0; a < 7; a++)
                                 {
-                                    for (int a = 0; a < 7; a++)
+                                    if (Board.checkValidMove(ref board, false, i, a))
                                     {
-                                        if (Board.checkValidMove(ref board, false, i, a))
-                                        {
-                                            possiblePlaces.Add(new Board.coordinate(i, a));
+                                        possiblePlaces.Add(new Board.coordinate(i, a));
+                                    }
+                                }
+                            }
+                            Random rnd = new Random();
+                            int pick = rnd.Next(0, possiblePlaces.Count);
+                            
+                            spotPick = possiblePlaces[pick];
+                        }
+
+                        if(difficulty == "Professional")
+                        {
+                            int topScore = 0;
+                            int tempScore = 0;
+                            for (int i = 0; i < 8; i++)
+                            {
+                                for (int a = 0; a < 8; a++)
+                                {
+                                    if (Board.checkValidMove(ref board, false, i, a))
+                                    {
+                                        tempScore = board.evaluatePlace(ref board, false, i, a);
+                                        if (tempScore > topScore) {
+                                            topScore = tempScore;
+                                            spotPick = new Board.coordinate(i, a);
+
                                         }
                                     }
                                 }
-                                Random rnd = new Random();
-                                int pick = rnd.Next(0, possiblePlaces.Count);
-                            
-                                spotPick = possiblePlaces[pick];
                             }
+                            Board.
+
+
+                        }
 
 
                         board.placeCounter(ref board, PlayerTurn, spotPick.row, spotPick.column);
                         Console.Clear();
                         board.displayBoard();
-                        //fix numbers here
-                        Console.WriteLine("AI placed at (" + intToLetter(spotPick.row) + ", " + (spotPick.column + 1)+ "), the counters flipped turn yellow shortly.");
+                        Console.WriteLine("AI placed at (" + intToLetter(spotPick.column) + ", " + (spotPick.row+1) + "), the counters flipped turn yellow shortly.");
 
                         
                     }

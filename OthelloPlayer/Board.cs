@@ -28,6 +28,59 @@ namespace OthelloPlayer
 
         }
 
+        /// <summary>
+        /// Evaluation function for a board position
+        /// </summary>
+        /// <param name="board">The board to evaluate</param>
+        /// <param name="PlayerTurn">True if it is the player's turn, and False otherwise</param>
+        /// <param name="row">The zero-indexed row to evaluate</param>
+        /// <param name="column">The zero-indexed column to evaluate</param>
+        /// <returns>An integer representing the goodness of the position</returns>
+        public int evaluatePlace(ref Board board, bool PlayerTurn, int row, int column)
+        {
+            return turnCounters(ref board, row, column, false, PlayerTurn).Count();
+        }
+
+        private int maxDepth = 5;
+        /// <summary>
+        /// Returns the best spot to go, looking ahead to maxDepth.
+        /// </summary>
+        /// <param name="board"></param>
+        /// <param name="playerTurn"></param>
+        /// <param name="currentDepth"></param>
+        /// <returns></returns>
+        public coordinate minimaxResult(Board board, bool playerTurn, int currentDepth)
+        {
+            int tempScore = 0;
+            int topScore = 0;
+            for(int i = 0; i < 8; i++)
+            {
+                for(int a = 0; a < 8; a++)
+                {
+                    if(checkValidMove(ref board, playerTurn, i, a))
+                    {
+                        if(currentDepth < maxDepth)
+                        {
+
+                        }
+                    }
+                }
+            }
+        }
+
+        public int evaluateBoard(Board board, bool playerTurn)
+        {
+            if(playerTurn)
+            {
+                return (getBlackScore() - getWhiteScore());
+            }
+            else
+            {
+                return (getWhiteScore() - getBlackScore());
+            }
+            
+        }
+
         public void placeCounter(ref Board board, bool PlayerTurn, int row, int column)
         {
             
