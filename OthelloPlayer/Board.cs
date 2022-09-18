@@ -42,6 +42,38 @@ namespace OthelloPlayer
         }
 
         private int maxDepth = 5;
+
+        public coordinate minimaxCall(Board board)
+        {
+            int tempScore = 0;
+            int topScore = 0;
+            coordinate bestSpot = new coordinate(0, 0);
+            //add coordinate variable
+            for (int i = 0; i < 8; i++)
+            {
+                for (int a = 0; a < 8; a++)
+                {
+                    if (checkValidMove(ref board, false, i, a))
+                    {
+                        Board newBoard = copyBoardWithExtraPiece(board, i, a, false);
+                        tempScore = minimaxResult(newBoard, false, 0);
+                        if (tempScore > topScore)
+                        {
+                            topScore = tempScore;
+                            bestSpot = new coordinate(i, a);
+                        }
+                    }
+                }
+            }
+            return bestSpot;
+        }
+
+        public Board copyBoardWithExtraPiece(Board board, int row, int column, bool PlayerTurn)
+        {
+            board.placeCounter(ref board, PlayerTurn, row, column);
+            return board;
+        }
+
         /// <summary>
         /// Returns the best spot to go, looking ahead to maxDepth.
         /// </summary>
@@ -49,25 +81,39 @@ namespace OthelloPlayer
         /// <param name="playerTurn"></param>
         /// <param name="currentDepth"></param>
         /// <returns></returns>
-        public coordinate minimaxResult(Board board, bool playerTurn, int currentDepth)
+        public int minimaxResult(Board board, bool playerTurn, int currentDepth)
         {
-            int tempScore = 0;
-            int topScore = 0;
-            for(int i = 0; i < 8; i++)
+            int bestScore = 0;
+            if (currentDepth != maxDepth)
             {
-                for(int a = 0; a < 8; a++)
+                for (int i = 0; i < 8; i++)
                 {
-                    if(checkValidMove(ref board, playerTurn, i, a))
+                    for (int a = 0; a < 8; a++)
                     {
-                        if(currentDepth < maxDepth)
+                        if (checkValidMove(ref board, false, i, a))
                         {
-
+                            //check if game is won by either player, if so, give score of 10000
+                            Board newBoard = new Board();
+                            newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn);//copies board and add new counter
+                            int tempScore = minimaxResult(newBoard, !playerTurn, currentDepth++);
+                            if (playerTurn)
+                            {
+                                if (tempScore < bestScore) bestScore = tempScore;
+                            }
+                            else
+                            {
+                                if (tempScore > bestScore) bestScore = tempScore;
+                            }
                         }
                     }
                 }
+                return bestScore;
+            }
+            else
+            {
+                return evaluateBoard(board, playerTurn);
             }
         }
-
         public int evaluateBoard(Board board, bool playerTurn)
         {
             if(playerTurn)

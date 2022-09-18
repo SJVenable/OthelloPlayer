@@ -179,16 +179,17 @@ namespace OthelloPlayer
 
                 else
                 {
+
                     //Carries out the AI's turn
                     if (Board.canPlaceCounter(ref board, PlayerTurn)) {
 
-
+                        Board.coordinate spotPick = new Board.coordinate(0, 0);
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("AI (White)'s turn, thinking...");
                         System.Threading.Thread.Sleep(1500);
                         Console.ForegroundColor = ConsoleColor.White;
 
-                        Board.coordinate spotPick = new Board.coordinate(0, 0);
+                        
 
                         if (difficulty == "Amateur")
                         {
@@ -211,28 +212,14 @@ namespace OthelloPlayer
 
                         if(difficulty == "Professional")
                         {
-                            int topScore = 0;
-                            int tempScore = 0;
-                            for (int i = 0; i < 8; i++)
-                            {
-                                for (int a = 0; a < 8; a++)
-                                {
-                                    if (Board.checkValidMove(ref board, false, i, a))
-                                    {
-                                        tempScore = board.evaluatePlace(ref board, false, i, a);
-                                        if (tempScore > topScore) {
-                                            topScore = tempScore;
-                                            spotPick = new Board.coordinate(i, a);
 
-                                        }
-                                    }
-                                }
-                            }
-                            Board.
-
+                            spotPick = board.minimaxCall(board);
+                            Console.WriteLine(spotPick.row + ", " + spotPick.column);
+                            Console.ReadKey();
 
                         }
 
+                        Console.WriteLine("Here");
 
                         board.placeCounter(ref board, PlayerTurn, spotPick.row, spotPick.column);
                         Console.Clear();
