@@ -9,7 +9,7 @@ namespace OthelloPlayer
     class Program
     {
 
-        public static string difficulty = "Amateur";
+        public static string difficulty = "Professional";
 
 
         static void Main(string[] args)
@@ -154,10 +154,29 @@ namespace OthelloPlayer
                                 Console.WriteLine("Please enter a correct column and row...");
                                 Console.ForegroundColor = ConsoleColor.White;
                             }
-                            Console.Write("Enter column: ");
-                            column = LetterToInt(char.Parse(Console.ReadLine().Substring(0, 1)));
-                            Console.Write("Enter row: ");
-                            row = int.Parse(Console.ReadLine()) - 1;
+
+                            do
+                            {
+                                Console.Write("Enter column: ");
+                                try
+                                {
+                                    column = LetterToInt(char.Parse(Console.ReadLine().Substring(0, 1)));
+                                } catch(Exception e)
+                                {
+                                    column = -1;
+                                }
+                                Console.Write("Enter row: ");
+                                try
+                                {
+                                    row = int.Parse(Console.ReadLine()) - 1;
+                                }
+                                catch (Exception e)
+                                {
+                                    row = -1;
+                                }
+                            }
+                            while (row == -1);
+                            
                             
                         }
                         
@@ -213,13 +232,10 @@ namespace OthelloPlayer
                         if(difficulty == "Professional")
                         {
 
-                            spotPick = board.minimaxCall(board);
-                            Console.WriteLine(spotPick.row + ", " + spotPick.column);
-                            Console.ReadKey();
+                            spotPick = Board.minimaxCall(board);
 
                         }
 
-                        Console.WriteLine("Here");
 
                         board.placeCounter(ref board, PlayerTurn, spotPick.row, spotPick.column);
                         Console.Clear();
@@ -245,7 +261,7 @@ namespace OthelloPlayer
             Console.WriteLine("GAME OVER, winner was...");
             System.Threading.Thread.Sleep(3000);
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(Board.checkWinner(ref board));
+            Console.WriteLine(Board.checkWinner(ref board) + "!");
 
             Console.ReadKey();
 

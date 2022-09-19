@@ -20,12 +20,14 @@ namespace OthelloPlayer
             }
         }
 
-        public static string[,] BoardState = new string[8, 8];
+        public string[,] BoardState = new string[8, 8];
 
-        public Board()
+        public Board(bool setup = true)
         {
-            setUpBoard();
-
+            if (setup)
+            {
+                setUpBoard();
+            }
         }
 
         /// <summary>
@@ -41,22 +43,21 @@ namespace OthelloPlayer
             return turnCounters(ref board, row, column, false, PlayerTurn).Count();
         }
 
-        private int maxDepth = 5;
+        private static int maxDepth = 15;
 
-        public coordinate minimaxCall(Board board)
+        public static coordinate minimaxCall(Board board)
         {
             int tempScore = 0;
             int topScore = 0;
             coordinate bestSpot = new coordinate(0, 0);
-            //add coordinate variable
             for (int i = 0; i < 8; i++)
             {
                 for (int a = 0; a < 8; a++)
                 {
                     if (checkValidMove(ref board, false, i, a))
                     {
-                        Board newBoard = copyBoardWithExtraPiece(board, i, a, false);
-                        tempScore = minimaxResult(newBoard, false, 0);
+                        Board newBoard = Board.copyBoardWithExtraPiece(board, i, a, false);
+                        tempScore = Board.minimaxResult(newBoard, false, 0);
                         if (tempScore > topScore)
                         {
                             topScore = tempScore;
@@ -68,10 +69,18 @@ namespace OthelloPlayer
             return bestSpot;
         }
 
-        public Board copyBoardWithExtraPiece(Board board, int row, int column, bool PlayerTurn)
+        public static Board copyBoardWithExtraPiece(Board board, int row, int column, bool PlayerTurn)
         {
-            board.placeCounter(ref board, PlayerTurn, row, column);
-            return board;
+            Board boardCopy = new Board(setup: false);
+            for (int i = 0; i < 8; i++)
+            {
+                for (int a = 0; a < 8; a++)
+                {
+                    boardCopy.BoardState[i, a] = board.BoardState[i, a];
+                }
+            }
+            boardCopy.placeCounter(ref boardCopy, PlayerTurn, row, column);
+            return boardCopy;
         }
 
         /// <summary>
@@ -81,11 +90,32 @@ namespace OthelloPlayer
         /// <param name="playerTurn"></param>
         /// <param name="currentDepth"></param>
         /// <returns></returns>
-        public int minimaxResult(Board board, bool playerTurn, int currentDepth)
+        public static int minimaxResult(Board board, bool playerTurn, int currentDepth)
         {
             int bestScore = 0;
+
+            if (playerTurn) bestScore = -100000;
+            else bestScore = 100000;
+
             if (currentDepth != maxDepth)
             {
+                if(Board.isFull(ref board))
+                {
+                    if (Board.checkWinner(ref board) == "Black")
+                    {
+                        Console.WriteLine("HERE BLACK");
+                        Console.ReadKey();
+                        return -1000;
+                    }
+                    if (Board.checkWinner(ref board) == "Draw") {
+                        Console.WriteLine("HERE DRAW");
+                        Console.ReadKey();
+                        return -100;
+                    }
+                    else return 1000;
+                    Console.WriteLine("HERE WHITE");
+                    Console.ReadKey();
+                }
                 for (int i = 0; i < 8; i++)
                 {
                     for (int a = 0; a < 8; a++)
@@ -95,7 +125,7 @@ namespace OthelloPlayer
                             //check if game is won by either player, if so, give score of 10000
                             Board newBoard = new Board();
                             newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn);//copies board and add new counter
-                            int tempScore = minimaxResult(newBoard, !playerTurn, currentDepth++);
+                            int tempScore = minimaxResult(newBoard, !playerTurn, currentDepth + 1);
                             if (playerTurn)
                             {
                                 if (tempScore < bestScore) bestScore = tempScore;
@@ -111,18 +141,18 @@ namespace OthelloPlayer
             }
             else
             {
-                return evaluateBoard(board, playerTurn);
+                return Board.evaluateBoard(board, playerTurn);
             }
         }
-        public int evaluateBoard(Board board, bool playerTurn)
+        public static int evaluateBoard(Board board, bool playerTurn)
         {
             if(playerTurn)
             {
-                return (getBlackScore() - getWhiteScore());
+                return (board.getBlackScore() - board.getWhiteScore());
             }
             else
             {
-                return (getWhiteScore() - getBlackScore());
+                return (board.getWhiteScore() - board.getBlackScore());
             }
             
         }
@@ -141,7 +171,7 @@ namespace OthelloPlayer
                 return false;
             }
 
-            if (BoardState[row, column] != " ")
+            if (board.BoardState[row, column] != " ")
             {
                 return false;
             }
@@ -198,11 +228,11 @@ namespace OthelloPlayer
             {
                 for (int a = 0; a < 7; a++)
                 {
-                    if(BoardState[i, a] == "B")
+                    if(board.BoardState[i, a] == "B")
                     {
                         onePoints++;
                     }
-                    if (BoardState[i, a] == "W")
+                    if (board.BoardState[i, a] == "W")
                     {
                         twoPoints++;
                     }
@@ -211,13 +241,13 @@ namespace OthelloPlayer
             }
             if(onePoints > twoPoints)
             {
-                return "Player One! (BLACK) Congratulations!";
+                return "Black";
             }
             if (onePoints < twoPoints)
             {
-                return "Player Two! (WHITE) Congratulations!";
+                return "White";
             }
-            else return "Nobody, it was a draw!";
+            else return "Draw";
         }
 
         public static List<coordinate> turnCounters(ref Board board, int row, int column, bool flip, bool PlayerTurn)
@@ -241,17 +271,17 @@ namespace OthelloPlayer
             //check horizontal right:
             if((column + 2) < 7)
             {
-                if (BoardState[row, column + 1] == notMyColour)
+                if (board.BoardState[row, column + 1] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row, (column + 1)));
                     for (int i = column + 2; i < 7; i++)
                     {
-                        if (BoardState[row, i] == notMyColour)
+                        if (board.BoardState[row, i] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(row, i));
                             //add them to temporary list
                         }
-                        if(BoardState[row, i] == myColour)
+                        if(board.BoardState[row, i] == myColour)
                         {
                             foreach(var item in tempDiscsToTurn)
                             {
@@ -262,7 +292,7 @@ namespace OthelloPlayer
                         }
                         if (i < 8)
                         {
-                            if (BoardState[row, i] == " ")
+                            if (board.BoardState[row, i] == " ")
                             {
                                 i = 8;
                                 tempDiscsToTurn = new List<coordinate>();
@@ -277,17 +307,17 @@ namespace OthelloPlayer
             //check horizontal left
             if ((column - 2) > -1)
             {
-                if (BoardState[row, column - 1] == notMyColour)
+                if (board.BoardState[row, column - 1] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row, (column - 1)));
                     for (int i = column - 2; i > -1; i--)
                     {
-                        if (BoardState[row, i] == notMyColour)
+                        if (board.BoardState[row, i] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(row, i));
                             //add them to temporary list
                         }
-                        if (BoardState[row, i] == myColour)
+                        if (board.BoardState[row, i] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -298,7 +328,7 @@ namespace OthelloPlayer
                         }
                         if (i > -1)
                         {
-                            if (BoardState[row, i] == " ")
+                            if (board.BoardState[row, i] == " ")
                             {
                                 i = -1;
                                 tempDiscsToTurn = new List<coordinate>();
@@ -312,17 +342,17 @@ namespace OthelloPlayer
             //check up:
             if ((row - 2) > -1)
             {
-                if (BoardState[row - 1, column] == notMyColour)
+                if (board.BoardState[row - 1, column] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row - 1, column));
                     for (int i = row - 2; i > -1; i--)
                     {
-                        if (BoardState[i, column] == notMyColour)
+                        if (board.BoardState[i, column] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(i, column));
                             //add them to temporary list
                         }
-                        if (BoardState[i, column] == myColour)
+                        if (board.BoardState[i, column] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -333,7 +363,7 @@ namespace OthelloPlayer
                         }
                         if (i > -1)
                         {
-                            if (BoardState[i, column] == " ")
+                            if (board.BoardState[i, column] == " ")
                             {
                                 i = -1;
                                 tempDiscsToTurn = new List<coordinate>();
@@ -347,17 +377,17 @@ namespace OthelloPlayer
             //check down:
             if ((row + 2) < 8)
             {
-                if (BoardState[row + 1, column] == notMyColour)
+                if (board.BoardState[row + 1, column] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row + 1, column));
                     for (int i = row + 2; i < 8; i++)
                     {
-                        if (BoardState[i, column] == notMyColour)
+                        if (board.BoardState[i, column] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(i, column));
                             //add them to temporary list
                         }
-                        if (BoardState[i, column] == myColour)
+                        if (board.BoardState[i, column] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -368,7 +398,7 @@ namespace OthelloPlayer
                         }
                         if (i < 8)
                         {
-                            if (BoardState[i, column] == " ")
+                            if (board.BoardState[i, column] == " ")
                             {
                                 i = 8;
                                 tempDiscsToTurn = new List<coordinate>();
@@ -382,17 +412,17 @@ namespace OthelloPlayer
             //Check SE diagonal:
             if (((row + 2) < 8) && ((column + 2) < 8))
             {
-                if (BoardState[row + 1, column + 1] == notMyColour)
+                if (board.BoardState[row + 1, column + 1] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row + 1, column + 1));
                     for (int i = 2; row + i < 8 && column + i < 8; i++)
                     {
-                        if (BoardState[row + i, column + i] == notMyColour)
+                        if (board.BoardState[row + i, column + i] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(row + i, column + i));
                             //add them to temporary list
                         }
-                        if (BoardState[row + i, column + i] == myColour)
+                        if (board.BoardState[row + i, column + i] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -403,7 +433,7 @@ namespace OthelloPlayer
                         }
                         if (i < 8)
                         {
-                            if (BoardState[row + i, column + i] == " ")
+                            if (board.BoardState[row + i, column + i] == " ")
                             {
                                 i = 8;
                                 tempDiscsToTurn = new List<coordinate>();
@@ -417,17 +447,17 @@ namespace OthelloPlayer
             //Check NW diagonal:
             if (((row - 2) > -1) && ((column - 2) > -1))
             {
-                if (BoardState[row - 1, column - 1] == notMyColour)
+                if (board.BoardState[row - 1, column - 1] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row - 1, column - 1));
                     for (int i = 2; row - i > -1 && column - i > -1; i++)
                     {
-                        if (BoardState[row - i, column - i] == notMyColour)
+                        if (board.BoardState[row - i, column - i] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(row - i, column - i));
                             //add them to temporary list
                         }
-                        if (BoardState[row - i, column - i] == myColour)
+                        if (board.BoardState[row - i, column - i] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -438,7 +468,7 @@ namespace OthelloPlayer
                         }
                         if (row - i > -1)
                         {
-                            if (BoardState[row - i, column - i] == " ")
+                            if (board.BoardState[row - i, column - i] == " ")
                             {
                                 i = 8;
                                 tempDiscsToTurn = new List<coordinate>();
@@ -452,17 +482,17 @@ namespace OthelloPlayer
             //Check NE diagonal:
             if (((row - 2) > -1) && ((column + 2) < 8))
             {
-                if (BoardState[row - 1, column + 1] == notMyColour)
+                if (board.BoardState[row - 1, column + 1] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row - 1, column + 1));
                     for (int i = 2; row - i > -1 && column + i < 8; i++)
                     {
-                        if (BoardState[row - i, column + i] == notMyColour)
+                        if (board.BoardState[row - i, column + i] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(row - i, column + i));
                             //add them to temporary list
                         }
-                        if (BoardState[row - i, column + i] == myColour)
+                        if (board.BoardState[row - i, column + i] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -473,7 +503,7 @@ namespace OthelloPlayer
                         }
                         if (row - i > -1)
                         {
-                            if (BoardState[row - i, column + i] == " ")
+                            if (board.BoardState[row - i, column + i] == " ")
                             {
                                 i = 8;
                                 tempDiscsToTurn = new List<coordinate>();
@@ -487,17 +517,17 @@ namespace OthelloPlayer
             //Check SW diagonal
             if (((column - 2) > -1) && ((row + 2) < 8))
             {
-                if (BoardState[row + 1, column - 1] == notMyColour)
+                if (board.BoardState[row + 1, column - 1] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row + 1, column - 1));
                     for (int i = 2; column - i > -1 && row + i < 8; i++)
                     {
-                        if (BoardState[row + i, column - i] == notMyColour)
+                        if (board.BoardState[row + i, column - i] == notMyColour)
                         {
                             tempDiscsToTurn.Add(new coordinate(row + i, column - i));
                             //add them to temporary list
                         }
-                        if (BoardState[row + i, column - i] == myColour)
+                        if (board.BoardState[row + i, column - i] == myColour)
                         {
                             foreach (var item in tempDiscsToTurn)
                             {
@@ -508,7 +538,7 @@ namespace OthelloPlayer
                         }
                         if (row + i < 8)
                         {
-                            if (BoardState[row + i, column - i] == " ")
+                            if (board.BoardState[row + i, column - i] == " ")
                             {
                                 i = 8;
                                 tempDiscsToTurn = new List<coordinate>();
@@ -533,11 +563,11 @@ namespace OthelloPlayer
                     flipToColour = "B";
                 }
                 else flipToColour = "R";
-                BoardState[row, column] = flipToColour;
+                board.BoardState[row, column] = flipToColour;
                 foreach (var item in discsToTurn)
                 {
                     //R for recently placed/flipped
-                    BoardState[item.row, item.column] = flipToColour;
+                    board.BoardState[item.row, item.column] = flipToColour;
                 }
             }
             return discsToTurn;
