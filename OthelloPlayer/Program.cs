@@ -21,8 +21,8 @@ namespace OthelloPlayer
 
             //returns a menu option which sends you down one of three switch statements.
             int menuOption = displayMenu();
-            
-            while(menuOption != 1)
+
+            while (menuOption != 1)
             {
                 switch (menuOption)
                 {
@@ -106,7 +106,7 @@ namespace OthelloPlayer
             }
 
 
-            
+
 
         }
 
@@ -115,7 +115,7 @@ namespace OthelloPlayer
             string strLetter = letter.ToString().ToUpper();
             char UpperCaseChar = strLetter.ToCharArray()[0];
 
-            return UpperCaseChar - (int) 'A';
+            return UpperCaseChar - (int)'A';
         }
 
         public static char intToLetter(int num)
@@ -140,7 +140,7 @@ namespace OthelloPlayer
                     Console.WriteLine("Player One (Black)'s turn...");
                     Console.ForegroundColor = ConsoleColor.White;
 
-                    
+
 
                     if (Board.canPlaceCounter(ref board, PlayerTurn))
                     {
@@ -161,7 +161,8 @@ namespace OthelloPlayer
                                 try
                                 {
                                     column = LetterToInt(char.Parse(Console.ReadLine().Substring(0, 1)));
-                                } catch(Exception e)
+                                }
+                                catch (Exception e)
                                 {
                                     column = -1;
                                 }
@@ -176,10 +177,10 @@ namespace OthelloPlayer
                                 }
                             }
                             while (row == -1);
-                            
-                            
+
+
                         }
-                        
+
 
                         board.placeCounter(ref board, PlayerTurn, row, column);
                         Console.Clear();
@@ -191,7 +192,7 @@ namespace OthelloPlayer
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Player 1 can't go anywhere! Go skipped...");
                         Console.ForegroundColor = ConsoleColor.White;
-                        
+
                     }
                     PlayerTurn = false;
                 }
@@ -200,7 +201,8 @@ namespace OthelloPlayer
                 {
 
                     //Carries out the AI's turn
-                    if (Board.canPlaceCounter(ref board, PlayerTurn)) {
+                    if (Board.canPlaceCounter(ref board, PlayerTurn))
+                    {
 
                         Board.coordinate spotPick = new Board.coordinate(0, 0);
                         Console.ForegroundColor = ConsoleColor.Green;
@@ -208,7 +210,7 @@ namespace OthelloPlayer
                         System.Threading.Thread.Sleep(1500);
                         Console.ForegroundColor = ConsoleColor.White;
 
-                        
+
 
                         if (difficulty == "Amateur")
                         {
@@ -225,11 +227,11 @@ namespace OthelloPlayer
                             }
                             Random rnd = new Random();
                             int pick = rnd.Next(0, possiblePlaces.Count);
-                            
+
                             spotPick = possiblePlaces[pick];
                         }
 
-                        if(difficulty == "Professional")
+                        if (difficulty == "Professional")
                         {
 
                             spotPick = Board.minimaxCall(board);
@@ -240,9 +242,9 @@ namespace OthelloPlayer
                         board.placeCounter(ref board, PlayerTurn, spotPick.row, spotPick.column);
                         Console.Clear();
                         board.displayBoard();
-                        Console.WriteLine("AI placed at (" + intToLetter(spotPick.column) + ", " + (spotPick.row+1) + "), the counters flipped turn yellow shortly.");
+                        Console.WriteLine("AI placed at (" + intToLetter(spotPick.column) + ", " + (spotPick.row + 1) + "), the counters flipped turn yellow shortly.");
 
-                        
+
                     }
 
                     else
@@ -250,13 +252,13 @@ namespace OthelloPlayer
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Player 2 can't go anywhere! Go skipped...");
                         Console.ForegroundColor = ConsoleColor.White;
-                        
+
                     }
                     PlayerTurn = true;
 
                 }
 
-                
+
             }
             Console.WriteLine("GAME OVER, winner was...");
             System.Threading.Thread.Sleep(3000);

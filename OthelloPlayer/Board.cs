@@ -43,7 +43,7 @@ namespace OthelloPlayer
             return turnCounters(ref board, row, column, false, PlayerTurn).Count();
         }
 
-        private static int maxDepth = 15;
+        private static int maxDepth = 5;
 
         public static coordinate minimaxCall(Board board)
         {
@@ -99,22 +99,17 @@ namespace OthelloPlayer
 
             if (currentDepth != maxDepth)
             {
-                if(Board.isFull(ref board))
+                if (Board.isFull(ref board))
                 {
                     if (Board.checkWinner(ref board) == "Black")
                     {
-                        Console.WriteLine("HERE BLACK");
-                        Console.ReadKey();
                         return -1000;
                     }
-                    if (Board.checkWinner(ref board) == "Draw") {
-                        Console.WriteLine("HERE DRAW");
-                        Console.ReadKey();
+                    if (Board.checkWinner(ref board) == "Draw")
+                    {
                         return -100;
                     }
                     else return 1000;
-                    Console.WriteLine("HERE WHITE");
-                    Console.ReadKey();
                 }
                 for (int i = 0; i < 8; i++)
                 {
@@ -146,7 +141,7 @@ namespace OthelloPlayer
         }
         public static int evaluateBoard(Board board, bool playerTurn)
         {
-            if(playerTurn)
+            if (playerTurn)
             {
                 return (board.getBlackScore() - board.getWhiteScore());
             }
@@ -154,19 +149,19 @@ namespace OthelloPlayer
             {
                 return (board.getWhiteScore() - board.getBlackScore());
             }
-            
+
         }
 
         public void placeCounter(ref Board board, bool PlayerTurn, int row, int column)
         {
-            
+
             turnCounters(ref board, row, column, true, PlayerTurn);
 
         }
 
         public static bool checkValidMove(ref Board board, bool PlayerTurn, int row, int column)
         {
-            if(row > 7 || row < 0 || column > 7 || column < 0)
+            if (row > 7 || row < 0 || column > 7 || column < 0)
             {
                 return false;
             }
@@ -175,13 +170,13 @@ namespace OthelloPlayer
             {
                 return false;
             }
-            
+
             if (turnCounters(ref board, row, column, false, PlayerTurn).Count != 0)
             {
                 return true;
             }
             return false;
-            
+
         }
 
         public static bool isFull(ref Board board)
@@ -228,7 +223,7 @@ namespace OthelloPlayer
             {
                 for (int a = 0; a < 7; a++)
                 {
-                    if(board.BoardState[i, a] == "B")
+                    if (board.BoardState[i, a] == "B")
                     {
                         onePoints++;
                     }
@@ -236,10 +231,10 @@ namespace OthelloPlayer
                     {
                         twoPoints++;
                     }
-                    
+
                 }
             }
-            if(onePoints > twoPoints)
+            if (onePoints > twoPoints)
             {
                 return "Black";
             }
@@ -269,7 +264,7 @@ namespace OthelloPlayer
             }
 
             //check horizontal right:
-            if((column + 2) < 7)
+            if ((column + 2) < 7)
             {
                 if (board.BoardState[row, column + 1] == notMyColour)
                 {
@@ -281,9 +276,9 @@ namespace OthelloPlayer
                             tempDiscsToTurn.Add(new coordinate(row, i));
                             //add them to temporary list
                         }
-                        if(board.BoardState[row, i] == myColour)
+                        if (board.BoardState[row, i] == myColour)
                         {
-                            foreach(var item in tempDiscsToTurn)
+                            foreach (var item in tempDiscsToTurn)
                             {
                                 discsToTurn.Add(item);
                             }
@@ -555,7 +550,7 @@ namespace OthelloPlayer
             //flip counters
             if (flip)
             {
-                
+
 
                 string flipToColour;
                 if (PlayerTurn)
@@ -574,9 +569,9 @@ namespace OthelloPlayer
 
         }
 
-        
 
-        
+
+
 
 
         public void setUpBoard()
@@ -599,9 +594,9 @@ namespace OthelloPlayer
         public int getBlackScore()
         {
             int black = 0;
-            foreach(var item in BoardState)
+            foreach (var item in BoardState)
             {
-                if(item == "B")
+                if (item == "B")
                 {
                     black++;
                 }
@@ -640,9 +635,9 @@ namespace OthelloPlayer
             for (int i = 1; i < 9; i++)
             {
                 Console.Write(" " + i + " |");
-                for(int a = 0; a < 8; a++)
+                for (int a = 0; a < 8; a++)
                 {
-                    if(BoardState[i-1, a] == "B")
+                    if (BoardState[i - 1, a] == "B")
                     {
                         Console.ForegroundColor = ConsoleColor.Black;
                         Console.Write("  █");
@@ -655,7 +650,7 @@ namespace OthelloPlayer
                         Console.Write("  █");
 
                     }
-                    else if (BoardState[i-1, a] == "R")
+                    else if (BoardState[i - 1, a] == "R")
                     {
                         Console.ForegroundColor = ConsoleColor.DarkYellow;
                         Console.Write("  █");
@@ -672,7 +667,7 @@ namespace OthelloPlayer
 
 
                 }
-                if(i == 1)
+                if (i == 1)
                 {
                     Console.BackgroundColor = ConsoleColor.Black;
                     Console.Write(" Black: " + getBlackScore());
@@ -684,7 +679,8 @@ namespace OthelloPlayer
                     Console.BackgroundColor = ConsoleColor.DarkGreen;
 
                 }
-                else {
+                else
+                {
                     Console.WriteLine();
                     Console.WriteLine("    ------------------------------------------------");
                 }
@@ -692,7 +688,7 @@ namespace OthelloPlayer
 
             Console.BackgroundColor = ConsoleColor.Black;
 
-            if(recentlyFlipped.Count != 0)
+            if (recentlyFlipped.Count != 0)
             {
                 if (secondTimeBoard == false)
                 {
@@ -705,14 +701,14 @@ namespace OthelloPlayer
                     secondTimeBoard = true;
                 }
             }
-            
-            if(secondTimeBoard == true)
+
+            if (secondTimeBoard == true)
             {
                 secondTimeBoard = false;
                 Console.Clear();
                 displayBoard();
             }
-            
+
 
 
         }
