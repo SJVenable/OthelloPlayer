@@ -589,6 +589,7 @@ namespace OthelloPlayer
             BoardState[3, 4] = "B"; // should be B
 
 
+
         }
 
         public int getBlackScore()
