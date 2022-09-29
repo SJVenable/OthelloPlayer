@@ -43,7 +43,7 @@ namespace OthelloPlayer
             return turnCounters(ref board, row, column, false, PlayerTurn).Count();
         }
 
-        private static int maxDepth = 5;
+        private static int maxDepth = 7;
 
         public static coordinate minimaxCall(Board board)
         {
@@ -295,6 +295,7 @@ namespace OthelloPlayer
                             }
                         }
                     }
+                    tempDiscsToTurn = new List<coordinate>();
                 }
             }
             //checked horizontal right
@@ -331,6 +332,7 @@ namespace OthelloPlayer
                             }
                         }
                     }
+                    tempDiscsToTurn = new List<coordinate>();
                 }
             }
             //checked horizontal left.
@@ -356,6 +358,7 @@ namespace OthelloPlayer
                             tempDiscsToTurn = new List<coordinate>();
                             i = -1;
                         }
+                        //REMOVE THIS IF EVERYWHERE?
                         if (i > -1)
                         {
                             if (board.BoardState[i, column] == " ")
@@ -366,6 +369,7 @@ namespace OthelloPlayer
                             }
                         }
                     }
+                    tempDiscsToTurn = new List<coordinate>();
                 }
             }
             //checked up.
@@ -401,6 +405,7 @@ namespace OthelloPlayer
                             }
                         }
                     }
+                    tempDiscsToTurn = new List<coordinate>();
                 }
             }
             //Checked down.
@@ -436,6 +441,7 @@ namespace OthelloPlayer
                             }
                         }
                     }
+                    tempDiscsToTurn = new List<coordinate>();
                 }
             }
             //Checked SE diagonal
@@ -471,6 +477,7 @@ namespace OthelloPlayer
                             }
                         }
                     }
+                    tempDiscsToTurn = new List<coordinate>();
                 }
             }
             //Checked NW diagonal.
@@ -506,6 +513,7 @@ namespace OthelloPlayer
                             }
                         }
                     }
+                    tempDiscsToTurn = new List<coordinate>();
                 }
             }
             //Checked NE diagonal
@@ -541,6 +549,7 @@ namespace OthelloPlayer
                             }
                         }
                     }
+                    tempDiscsToTurn = new List<coordinate>();
                 }
             }
             //Checked SW diagonal
