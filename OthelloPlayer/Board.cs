@@ -182,9 +182,9 @@ namespace OthelloPlayer
         public static bool isFull(ref Board board)
         {
             //loop through values in board:
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 8; i++)
             {
-                for (int a = 0; a < 7; a++)
+                for (int a = 0; a < 8; a++)
                 {
 
                     if (turnCounters(ref board, i, a, false, true).Count != 0)
@@ -202,9 +202,10 @@ namespace OthelloPlayer
 
         public static bool canPlaceCounter(ref Board board, bool PlayerTurn)
         {
-            for (int i = 0; i < 7; i++)
+            //changed from < 7 right?
+            for (int i = 0; i < 8; i++)
             {
-                for (int a = 0; a < 7; a++)
+                for (int a = 0; a < 8; a++)
                 {
                     if (Board.checkValidMove(ref board, PlayerTurn, i, a))
                     {
@@ -219,9 +220,10 @@ namespace OthelloPlayer
         {
             int onePoints = 0;
             int twoPoints = 0;
-            for (int i = 0; i < 7; i++)
+            //changed from <7 right?
+            for (int i = 0; i < 8; i++)
             {
-                for (int a = 0; a < 7; a++)
+                for (int a = 0; a < 8; a++)
                 {
                     if (board.BoardState[i, a] == "B")
                     {
@@ -269,7 +271,7 @@ namespace OthelloPlayer
                 if (board.BoardState[row, column + 1] == notMyColour)
                 {
                     tempDiscsToTurn.Add(new coordinate(row, (column + 1)));
-                    for (int i = column + 2; i < 7; i++)
+                    for (int i = column + 2; i < 8; i++)
                     {
                         if (board.BoardState[row, i] == notMyColour)
                         {
@@ -596,6 +598,23 @@ namespace OthelloPlayer
             BoardState[4, 4] = "W"; // should be W
             BoardState[4, 3] = "B"; // should be B
             BoardState[3, 4] = "B"; // should be B
+
+            //trial board:
+            for (int i = 0; i < 8; i++)
+            {
+                for (int a = 0; a < 8; a++)
+                {
+                    BoardState[i, a] = "W";
+                }
+            }
+            BoardState[3, 4] = "B";
+            BoardState[3, 6] = " ";
+            BoardState[5, 4] = " ";
+            BoardState[5, 5] = " ";
+            BoardState[4, 4] = " ";
+            BoardState[2, 3] = " ";
+            BoardState[2, 2] = " ";
+
 
 
 
