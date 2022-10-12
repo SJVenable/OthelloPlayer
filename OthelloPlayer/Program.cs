@@ -140,8 +140,6 @@ namespace OthelloPlayer
                     Console.WriteLine("Player One (Black)'s turn...");
                     Console.ForegroundColor = ConsoleColor.White;
 
-
-
                     if (Board.canPlaceCounter(ref board, PlayerTurn))
                     {
                         int tries = 0;
@@ -192,6 +190,7 @@ namespace OthelloPlayer
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Player 1 can't go anywhere! Go skipped...");
                         Console.ForegroundColor = ConsoleColor.White;
+                        System.Threading.Thread.Sleep(2000);
 
                     }
                     PlayerTurn = false;

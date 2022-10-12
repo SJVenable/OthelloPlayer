@@ -249,10 +249,15 @@ namespace OthelloPlayer
 
         public static List<coordinate> turnCounters(ref Board board, int row, int column, bool flip, bool PlayerTurn)
         {
+
+            
+
             List<coordinate> discsToTurn = new List<coordinate>();
             List<coordinate> tempDiscsToTurn = new List<coordinate>();
 
-            string myColour;
+            if (!(board.BoardState[row, column] == " ")) return discsToTurn;
+
+             string myColour;
             string notMyColour;
             if (PlayerTurn)
             {
@@ -600,6 +605,7 @@ namespace OthelloPlayer
             BoardState[3, 4] = "B"; // should be B
 
             //trial board:
+            /*
             for (int i = 0; i < 8; i++)
             {
                 for (int a = 0; a < 8; a++)
@@ -614,7 +620,7 @@ namespace OthelloPlayer
             BoardState[4, 4] = " ";
             BoardState[2, 3] = " ";
             BoardState[2, 2] = " ";
-
+            */
 
 
 
