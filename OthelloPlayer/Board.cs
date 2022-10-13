@@ -43,7 +43,7 @@ namespace OthelloPlayer
             return turnCounters(ref board, row, column, false, PlayerTurn).Count();
         }
 
-        private static int maxDepth = 7;
+        private static int maxDepth = 5;
 
         public static coordinate minimaxCall(Board board)
         {
@@ -111,28 +111,59 @@ namespace OthelloPlayer
                     }
                     else return 1000;
                 }
-                for (int i = 0; i < 8; i++)
+
+                if(playerTurn)
                 {
-                    for (int a = 0; a < 8; a++)
+                    //loop through possible plays and picks best for player, then calls minimax on that move?
+                    int playerTemp = 0;
+                    int playerScore = 0;
+                    Board finalBoard = new Board();
+                    for (int i = 0; i < 8; i++)
                     {
-                        if (checkValidMove(ref board, false, i, a))
+                        for (int a = 0; a < 8; a++)
                         {
-                            //check if game is won by either player, if so, give score of 10000
-                            Board newBoard = new Board();
-                            newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn);//copies board and add new counter
-                            int tempScore = minimaxResult(newBoard, !playerTurn, currentDepth + 1);
-                            if (playerTurn)
+                            if (checkValidMove(ref board, false, i, a))
                             {
-                                if (tempScore < bestScore) bestScore = tempScore;
-                            }
-                            else
-                            {
-                                if (tempScore > bestScore) bestScore = tempScore;
+                                Board newBoard = new Board();
+                                newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn);//copies board and add new counter
+                                playerTemp = evaluateBoard(newBoard, playerTurn);
+                                if (playerTemp > playerScore)
+                                {
+                                    playerScore = playerTemp;
+                                    //make this set properly:
+                                    finalBoard = newBoard;
+                                }
                             }
                         }
                     }
+                    //then call minimax again with new board?
+                    return bestScore;
                 }
-                return bestScore;
+                else if(!playerTurn) {
+
+                    for (int i = 0; i < 8; i++)
+                    {
+                        for (int a = 0; a < 8; a++)
+                        {
+                            if (checkValidMove(ref board, false, i, a))
+                            {
+                                Board newBoard = new Board();
+                                newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn);//copies board and add new counter
+                                int tempScore = minimaxResult(newBoard, !playerTurn, currentDepth + 1);
+                                if (playerTurn)
+                                {
+                                    if (tempScore < bestScore) bestScore = tempScore;
+                                }
+                                else
+                                {
+                                    if (tempScore > bestScore) bestScore = tempScore;
+                                }
+                            }
+                        }
+                    }
+                    return bestScore;
+                }
+                
             }
             else
             {
@@ -141,13 +172,44 @@ namespace OthelloPlayer
         }
         public static int evaluateBoard(Board board, bool playerTurn)
         {
+            int score = 0;
             if (playerTurn)
             {
-                return (board.getBlackScore() - board.getWhiteScore());
+                score = board.getBlackScore() - board.getWhiteScore();
+                for(int i = 2; i < 6; i++)
+                {
+                    //+1 for edges
+                    if(board.BoardState[0, i] == "B") score+= 10000;
+                    if (board.BoardState[i, 0] == "B") score+= 10000;
+                    if (board.BoardState[7, i] == "B") score+= 10000;
+                    if (board.BoardState[i, 7] == "B") score+= 10000;
+                }
+
+                //+20 for corners
+                if (board.BoardState[0, 0] == "B") score += 10000;
+                if (board.BoardState[7, 0] == "B") score += 10000;
+                if (board.BoardState[7, 7] == "B") score += 10000;
+                if (board.BoardState[0, 7] == "B") score += 10000;
+                return score;
             }
             else
             {
-                return (board.getWhiteScore() - board.getBlackScore());
+                score = board.getWhiteScore() - board.getBlackScore();
+                for (int i = 2; i < 6; i++)
+                {
+                    //+1 for edges
+                    if (board.BoardState[0, i] == "W") score+=10000;
+                    if (board.BoardState[i, 0] == "W") score+=10000;
+                    if (board.BoardState[7, i] == "W") score+=10000;
+                    if (board.BoardState[i, 7] == "W") score+=10000;
+                }
+
+                //+3 for corners
+                if (board.BoardState[0, 0] == "W") score += 10000;
+                if (board.BoardState[7, 0] == "W") score += 10000;
+                if (board.BoardState[7, 7] == "W") score += 10000;
+                if (board.BoardState[0, 7] == "W") score += 10000;
+                return score;
             }
 
         }
