@@ -112,9 +112,9 @@ namespace OthelloPlayer
                     else return 1000;
                 }
 
+                //delete and merge into one general algorithm and fix how it backpropogates:
                 if(playerTurn)
                 {
-                    //loop through possible plays and picks best for player, then calls minimax on that move?
                     int playerTemp = 0;
                     int playerScore = 0;
                     Board finalBoard = new Board();
@@ -125,13 +125,19 @@ namespace OthelloPlayer
                             if (checkValidMove(ref board, false, i, a))
                             {
                                 Board newBoard = new Board();
-                                newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn);//copies board and add new counter
-                                playerTemp = evaluateBoard(newBoard, playerTurn);
+                                newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn); //copies board and add new counter
+                                playerTemp = minimaxResult(newBoard , !playerTurn, currentDepth+1);
                                 if (playerTemp > playerScore)
                                 {
                                     playerScore = playerTemp;
-                                    //make this set properly:
-                                    finalBoard = newBoard;
+                                    //sets final board to temp board:
+                                    for (int j = 0; j < 8; j++)
+                                    {
+                                        for (int k = 0; k < 8; k++)
+                                        {
+                                            finalBoard.BoardState[j, k] = newBoard.BoardState[j, k];
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -179,17 +185,17 @@ namespace OthelloPlayer
                 for(int i = 2; i < 6; i++)
                 {
                     //+1 for edges
-                    if(board.BoardState[0, i] == "B") score+= 10000;
-                    if (board.BoardState[i, 0] == "B") score+= 10000;
-                    if (board.BoardState[7, i] == "B") score+= 10000;
-                    if (board.BoardState[i, 7] == "B") score+= 10000;
+                    if(board.BoardState[0, i] == "B") score+= 2;
+                    if (board.BoardState[i, 0] == "B") score+= 2;
+                    if (board.BoardState[7, i] == "B") score+= 2;
+                    if (board.BoardState[i, 7] == "B") score+= 2;
                 }
 
                 //+20 for corners
-                if (board.BoardState[0, 0] == "B") score += 10000;
-                if (board.BoardState[7, 0] == "B") score += 10000;
-                if (board.BoardState[7, 7] == "B") score += 10000;
-                if (board.BoardState[0, 7] == "B") score += 10000;
+                if (board.BoardState[0, 0] == "B") score += 10;
+                if (board.BoardState[7, 0] == "B") score += 10;
+                if (board.BoardState[7, 7] == "B") score += 10;
+                if (board.BoardState[0, 7] == "B") score += 10;
                 return score;
             }
             else
@@ -198,17 +204,17 @@ namespace OthelloPlayer
                 for (int i = 2; i < 6; i++)
                 {
                     //+1 for edges
-                    if (board.BoardState[0, i] == "W") score+=10000;
-                    if (board.BoardState[i, 0] == "W") score+=10000;
-                    if (board.BoardState[7, i] == "W") score+=10000;
-                    if (board.BoardState[i, 7] == "W") score+=10000;
+                    if (board.BoardState[0, i] == "W") score+=2;
+                    if (board.BoardState[i, 0] == "W") score+=2;
+                    if (board.BoardState[7, i] == "W") score+=2;
+                    if (board.BoardState[i, 7] == "W") score+=2;
                 }
 
                 //+3 for corners
-                if (board.BoardState[0, 0] == "W") score += 10000;
-                if (board.BoardState[7, 0] == "W") score += 10000;
-                if (board.BoardState[7, 7] == "W") score += 10000;
-                if (board.BoardState[0, 7] == "W") score += 10000;
+                if (board.BoardState[0, 0] == "W") score += 10;
+                if (board.BoardState[7, 0] == "W") score += 10;
+                if (board.BoardState[7, 7] == "W") score += 10;
+                if (board.BoardState[0, 7] == "W") score += 10;
                 return score;
             }
 
