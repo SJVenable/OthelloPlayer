@@ -30,6 +30,24 @@ namespace OthelloPlayer
             }
         }
 
+        public static coordinate getRandomPlace(ref Board board, bool playerTurn)
+        {
+            List<Board.coordinate> possiblePlaces = new List<Board.coordinate>();
+            for (int i = 0; i < 7; i++)
+            {
+                for (int a = 0; a < 7; a++)
+                {
+                    if (Board.checkValidMove(ref board, false, i, a))
+                    {
+                        possiblePlaces.Add(new Board.coordinate(i, a));
+                    }
+                }
+            }
+            Random rnd = new Random();
+            int pick = rnd.Next(0, possiblePlaces.Count);
+            return possiblePlaces[pick];
+        }
+
         /// <summary>
         /// Evaluation function for a board position
         /// </summary>
@@ -43,13 +61,14 @@ namespace OthelloPlayer
             return turnCounters(ref board, row, column, false, PlayerTurn).Count();
         }
 
-        private static int maxDepth = 5;
+        private static int maxDepth = 3;
 
         public static coordinate minimaxCall(Board board)
         {
             int tempScore = 0;
             int topScore = 0;
-            coordinate bestSpot = new coordinate(0, 0);
+            //take this out to check if minimax working:
+            coordinate bestSpot = Board.getRandomPlace(ref board, false);
             for (int i = 0; i < 8; i++)
             {
                 for (int a = 0; a < 8; a++)
@@ -58,7 +77,7 @@ namespace OthelloPlayer
                     {
                         Board newBoard = Board.copyBoardWithExtraPiece(board, i, a, false);
                         tempScore = Board.minimaxResult(newBoard, false, 0);
-                        if (tempScore > topScore)
+                        if (tempScore >= topScore)
                         {
                             topScore = tempScore;
                             bestSpot = new coordinate(i, a);
@@ -92,6 +111,8 @@ namespace OthelloPlayer
         /// <returns></returns>
         public static int minimaxResult(Board board, bool playerTurn, int currentDepth)
         {
+
+            //Returning 0
             int bestScore = 0;
 
             if (playerTurn) bestScore = -100000;
@@ -112,68 +133,41 @@ namespace OthelloPlayer
                     else return 1000;
                 }
 
-                //delete and merge into one general algorithm and fix how it backpropogates:
-                if(playerTurn)
+                //fix how it backpropogates:
+                int tempScore = 0;
+                Board finalBoard = new Board();
+                for (int i = 0; i < 8; i++)
                 {
-                    int playerTemp = 0;
-                    int playerScore = 0;
-                    Board finalBoard = new Board();
-                    for (int i = 0; i < 8; i++)
+                    for (int a = 0; a < 8; a++)
                     {
-                        for (int a = 0; a < 8; a++)
+                        if (checkValidMove(ref board, false, i, a))
                         {
-                            if (checkValidMove(ref board, false, i, a))
+                            Board newBoard = new Board();
+                            newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn); //copies board and add new counter
+                            tempScore = minimaxResult(newBoard, !playerTurn, currentDepth+1);
+                            if(playerTurn)
                             {
-                                Board newBoard = new Board();
-                                newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn); //copies board and add new counter
-                                playerTemp = minimaxResult(newBoard , !playerTurn, currentDepth+1);
-                                if (playerTemp > playerScore)
+                                if (tempScore >= bestScore)
                                 {
-                                    playerScore = playerTemp;
-                                    //sets final board to temp board:
-                                    for (int j = 0; j < 8; j++)
-                                    {
-                                        for (int k = 0; k < 8; k++)
-                                        {
-                                            finalBoard.BoardState[j, k] = newBoard.BoardState[j, k];
-                                        }
-                                    }
+                                    bestScore = tempScore;
+                                }
+                            }
+                            else
+                            {
+                                if (tempScore <= bestScore)
+                                {
+                                    bestScore = tempScore;
                                 }
                             }
                         }
                     }
-                    //then call minimax again with new board?
-                    return bestScore;
                 }
-                else if(!playerTurn) {
-
-                    for (int i = 0; i < 8; i++)
-                    {
-                        for (int a = 0; a < 8; a++)
-                        {
-                            if (checkValidMove(ref board, false, i, a))
-                            {
-                                Board newBoard = new Board();
-                                newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn);//copies board and add new counter
-                                int tempScore = minimaxResult(newBoard, !playerTurn, currentDepth + 1);
-                                if (playerTurn)
-                                {
-                                    if (tempScore < bestScore) bestScore = tempScore;
-                                }
-                                else
-                                {
-                                    if (tempScore > bestScore) bestScore = tempScore;
-                                }
-                            }
-                        }
-                    }
-                    return bestScore;
-                }
-                
+                return bestScore;
             }
             else
             {
-                return Board.evaluateBoard(board, playerTurn);
+                int evaluate = Board.evaluateBoard(board, playerTurn);
+                return evaluate;
             }
         }
         public static int evaluateBoard(Board board, bool playerTurn)
@@ -317,8 +311,6 @@ namespace OthelloPlayer
 
         public static List<coordinate> turnCounters(ref Board board, int row, int column, bool flip, bool PlayerTurn)
         {
-
-            
 
             List<coordinate> discsToTurn = new List<coordinate>();
             List<coordinate> tempDiscsToTurn = new List<coordinate>();
