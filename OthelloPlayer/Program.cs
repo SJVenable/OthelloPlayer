@@ -213,21 +213,7 @@ namespace OthelloPlayer
 
                         if (difficulty == "Amateur")
                         {
-                            List<Board.coordinate> possiblePlaces = new List<Board.coordinate>();
-                            for (int i = 0; i < 7; i++)
-                            {
-                                for (int a = 0; a < 7; a++)
-                                {
-                                    if (Board.checkValidMove(ref board, false, i, a))
-                                    {
-                                        possiblePlaces.Add(new Board.coordinate(i, a));
-                                    }
-                                }
-                            }
-                            Random rnd = new Random();
-                            int pick = rnd.Next(0, possiblePlaces.Count);
-
-                            spotPick = possiblePlaces[pick];
+                            spotPick = Board.getRandomPlace(ref board, PlayerTurn);
                         }
 
                         if (difficulty == "Professional")

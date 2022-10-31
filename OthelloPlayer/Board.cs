@@ -61,22 +61,25 @@ namespace OthelloPlayer
             return turnCounters(ref board, row, column, false, PlayerTurn).Count();
         }
 
-        private static int maxDepth = 3;
+        private static int maxDepth = 50;
 
         public static coordinate minimaxCall(Board board)
         {
             int tempScore = 0;
-            int topScore = 0;
-            //take this out to check if minimax working:
-            coordinate bestSpot = Board.getRandomPlace(ref board, false);
+            int topScore = -10000;
+            coordinate bestSpot = new coordinate(0, 0);
+            //coordinate bestSpot = Board.getRandomPlace(ref board, false);
             for (int i = 0; i < 8; i++)
             {
                 for (int a = 0; a < 8; a++)
                 {
                     if (checkValidMove(ref board, false, i, a))
                     {
+                        Console.WriteLine("here");
+                        Console.ReadKey();
                         Board newBoard = Board.copyBoardWithExtraPiece(board, i, a, false);
                         tempScore = Board.minimaxResult(newBoard, false, 0);
+                        //sometimes still chooses (0, 0)?
                         if (tempScore >= topScore)
                         {
                             topScore = tempScore;
