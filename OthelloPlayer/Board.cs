@@ -61,12 +61,12 @@ namespace OthelloPlayer
             return turnCounters(ref board, row, column, false, PlayerTurn).Count();
         }
 
-        private static int maxDepth = 50;
+        private static int maxDepth = 7;
 
         public static coordinate minimaxCall(Board board)
         {
             int tempScore = 0;
-            int topScore = -10000;
+            int topScore = 100000;
             coordinate bestSpot = new coordinate(0, 0);
             //coordinate bestSpot = Board.getRandomPlace(ref board, false);
             for (int i = 0; i < 8; i++)
@@ -75,12 +75,11 @@ namespace OthelloPlayer
                 {
                     if (checkValidMove(ref board, false, i, a))
                     {
-                        Console.WriteLine("here");
-                        Console.ReadKey();
                         Board newBoard = Board.copyBoardWithExtraPiece(board, i, a, false);
-                        tempScore = Board.minimaxResult(newBoard, false, 0);
-                        //sometimes still chooses (0, 0)?
-                        if (tempScore >= topScore)
+                        //changed to call minimax on player's turn
+                        tempScore = Board.minimaxResult(newBoard, true, 0);
+                        //minimise the player's score
+                        if (tempScore <= topScore)
                         {
                             topScore = tempScore;
                             bestSpot = new coordinate(i, a);
@@ -115,28 +114,42 @@ namespace OthelloPlayer
         public static int minimaxResult(Board board, bool playerTurn, int currentDepth)
         {
 
-            //Returning 0
             int bestScore = 0;
 
-            if (playerTurn) bestScore = -100000;
-            else bestScore = 100000;
+            if (playerTurn) bestScore = 100000;
+            else bestScore = -100000;
 
             if (currentDepth != maxDepth)
             {
                 if (Board.isFull(ref board))
                 {
-                    if (Board.checkWinner(ref board) == "Black")
+                    //if someone has won:
+                    if(playerTurn)
                     {
-                        return -1000;
+                        if (Board.checkWinner(ref board) == "Black")
+                        {
+                            return 1000;
+                        }
+                        if (Board.checkWinner(ref board) == "Draw")
+                        {
+                            return -10;
+                        }
+                        else return -1000;
                     }
-                    if (Board.checkWinner(ref board) == "Draw")
+                    else
                     {
-                        return -100;
+                        if (Board.checkWinner(ref board) == "Black")
+                        {
+                            return -1000;
+                        }
+                        if (Board.checkWinner(ref board) == "Draw")
+                        {
+                            return -10;
+                        }
+                        else return 1000;
                     }
-                    else return 1000;
                 }
 
-                //fix how it backpropogates:
                 int tempScore = 0;
                 Board finalBoard = new Board();
                 for (int i = 0; i < 8; i++)
@@ -146,22 +159,24 @@ namespace OthelloPlayer
                         if (checkValidMove(ref board, false, i, a))
                         {
                             Board newBoard = new Board();
-                            newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn); //copies board and add new counter
+                            newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn); //copies board and adds new counter
                             tempScore = minimaxResult(newBoard, !playerTurn, currentDepth+1);
                             if(playerTurn)
                             {
-                                if (tempScore >= bestScore)
+                                if (tempScore < bestScore)
                                 {
                                     bestScore = tempScore;
                                 }
                             }
-                            else
+                            if (!playerTurn)
                             {
-                                if (tempScore <= bestScore)
+                                if (tempScore > bestScore)
                                 {
                                     bestScore = tempScore;
                                 }
                             }
+
+
                         }
                     }
                 }
