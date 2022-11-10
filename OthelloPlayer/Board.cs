@@ -61,7 +61,7 @@ namespace OthelloPlayer
             return turnCounters(ref board, row, column, false, PlayerTurn).Count();
         }
 
-        private static int maxDepth = 7;
+        private static int maxDepth = 1;
 
         public static coordinate minimaxCall(Board board)
         {
@@ -78,9 +78,14 @@ namespace OthelloPlayer
                         Board newBoard = Board.copyBoardWithExtraPiece(board, i, a, false);
                         //changed to call minimax on player's turn
                         tempScore = Board.minimaxResult(newBoard, true, 0);
+                        /*newBoard.displayBoard();
+                        Console.WriteLine("^MinimaxCall at (" + i +", " + a + ")");
+                        Console.WriteLine(tempScore + " is: " + tempScore);
+                        Console.ReadKey();*/
                         //minimise the player's score
                         if (tempScore <= topScore)
                         {
+                            //Console.WriteLine("new topScore = " + tempScore + " for move at: (" + i + ", " + a);
                             topScore = tempScore;
                             bestSpot = new coordinate(i, a);
                         }
@@ -161,7 +166,12 @@ namespace OthelloPlayer
                             Board newBoard = new Board();
                             newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn); //copies board and adds new counter
                             tempScore = minimaxResult(newBoard, !playerTurn, currentDepth+1);
-                            if(playerTurn)
+                            //debug:
+                          /*newBoard.displayBoard();
+                            Console.WriteLine("^Minimax result call at (" + i + ", " + a + "), depth:" + currentDepth);
+                            Console.WriteLine("at depth " + currentDepth + "tempScore is: " + tempScore);
+                            Console.ReadKey();*/
+                            if (playerTurn)
                             {
                                 if (tempScore < bestScore)
                                 {
@@ -175,8 +185,6 @@ namespace OthelloPlayer
                                     bestScore = tempScore;
                                 }
                             }
-
-
                         }
                     }
                 }
@@ -193,6 +201,7 @@ namespace OthelloPlayer
             int score = 0;
             if (playerTurn)
             {
+                //ADD MINUS POINTS FOR OPPONENT BEING IN CORNER - is this working?
                 score = board.getBlackScore() - board.getWhiteScore();
                 for(int i = 2; i < 6; i++)
                 {
@@ -201,14 +210,24 @@ namespace OthelloPlayer
                     if (board.BoardState[i, 0] == "B") score+= 2;
                     if (board.BoardState[7, i] == "B") score+= 2;
                     if (board.BoardState[i, 7] == "B") score+= 2;
+                    //take off points for opponent holding edges
+                    if (board.BoardState[0, i] == "W") score -= 2;
+                    if (board.BoardState[i, 0] == "W") score -= 2;
+                    if (board.BoardState[7, i] == "W") score -= 2;
+                    if (board.BoardState[i, 7] == "W") score -= 2;
                 }
 
                 //+20 for corners
-                if (board.BoardState[0, 0] == "B") score += 10;
-                if (board.BoardState[7, 0] == "B") score += 10;
-                if (board.BoardState[7, 7] == "B") score += 10;
-                if (board.BoardState[0, 7] == "B") score += 10;
-                return score;
+                if (board.BoardState[0, 0] == "B") score += 20;
+                if (board.BoardState[7, 0] == "B") score += 20;
+                if (board.BoardState[7, 7] == "B") score += 20;
+                if (board.BoardState[0, 7] == "B") score += 20;
+                //take off points for opponent holding corners
+                if (board.BoardState[0, 0] == "W") score -= 20;
+                if (board.BoardState[7, 0] == "W") score -= 20;
+                if (board.BoardState[7, 7] == "W") score -= 20;
+                if (board.BoardState[0, 7] == "W") score -= 20;
+
             }
             else
             {
@@ -216,19 +235,36 @@ namespace OthelloPlayer
                 for (int i = 2; i < 6; i++)
                 {
                     //+1 for edges
-                    if (board.BoardState[0, i] == "W") score+=2;
-                    if (board.BoardState[i, 0] == "W") score+=2;
-                    if (board.BoardState[7, i] == "W") score+=2;
-                    if (board.BoardState[i, 7] == "W") score+=2;
+                    if (board.BoardState[0, i] == "W" || board.BoardState[0, i] == "R") score+=2;
+                    if (board.BoardState[i, 0] == "W" || board.BoardState[i, 0] == "R") score+=2;
+                    if (board.BoardState[7, i] == "W" || board.BoardState[7, i] == "R") score+=2;
+                    if (board.BoardState[i, 7] == "W" || board.BoardState[i, 7] == "R") score +=2;
+
+                    if (board.BoardState[0, i] == "B") score -= 2;
+                    if (board.BoardState[i, 0] == "B") score -= 2;
+                    if (board.BoardState[7, i] == "B") score -= 2;
+                    if (board.BoardState[i, 7] == "B") score -= 2;
+
                 }
 
                 //+3 for corners
-                if (board.BoardState[0, 0] == "W") score += 10;
-                if (board.BoardState[7, 0] == "W") score += 10;
-                if (board.BoardState[7, 7] == "W") score += 10;
-                if (board.BoardState[0, 7] == "W") score += 10;
-                return score;
+                if (board.BoardState[0, 0] == "W" || board.BoardState[0, 0] == "R") score += 20;
+                if (board.BoardState[7, 0] == "W" || board.BoardState[7, 0] == "R") score += 20;
+                if (board.BoardState[7, 7] == "W" || board.BoardState[7, 7] == "R") score += 20;
+                if (board.BoardState[0, 7] == "W" || board.BoardState[0, 7] == "R") score += 20;
+
+                if (board.BoardState[0, 0] == "B") score -= 20;
+                if (board.BoardState[7, 0] == "B") score -= 20;
+                if (board.BoardState[7, 7] == "B") score -= 20;
+                if (board.BoardState[0, 7] == "B") score -= 20;
+
             }
+            //debug:
+            /*board.displayBoard();
+            Console.WriteLine("evaluation called with board^, score is: " + score + "on player turn?: " + playerTurn);
+            Console.WriteLine("Black Score = " + board.getBlackScore() + ", White Score = " + board.getWhiteScore());
+            Console.ReadKey();*/
+            return score;
 
         }
 
@@ -722,7 +758,7 @@ namespace OthelloPlayer
             int white = 0;
             foreach (var item in BoardState)
             {
-                if (item == "W")
+                if (item == "W" || item == "R")
                 {
                     white++;
                 }
