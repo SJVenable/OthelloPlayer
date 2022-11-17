@@ -61,7 +61,7 @@ namespace OthelloPlayer
             return turnCounters(ref board, row, column, false, PlayerTurn).Count();
         }
 
-        private static int maxDepth = 1;
+        private static int maxDepth = 5;
 
         public static coordinate minimaxCall(Board board)
         {
@@ -76,17 +76,13 @@ namespace OthelloPlayer
                     if (checkValidMove(ref board, false, i, a))
                     {
                         Board newBoard = Board.copyBoardWithExtraPiece(board, i, a, false);
-                        //changed to call minimax on player's turn
+                        //call minimax on this move, player's turn
                         tempScore = Board.minimaxResult(newBoard, true, 0);
-                        /*newBoard.displayBoard();
-                        Console.WriteLine("^MinimaxCall at (" + i +", " + a + ")");
-                        Console.WriteLine(tempScore + " is: " + tempScore);
-                        Console.ReadKey();*/
                         //minimise the player's score
                         if (tempScore <= topScore)
                         {
-                            //Console.WriteLine("new topScore = " + tempScore + " for move at: (" + i + ", " + a);
                             topScore = tempScore;
+                            //sets bestSpot to best coordinate
                             bestSpot = new coordinate(i, a);
                         }
                     }
@@ -97,6 +93,7 @@ namespace OthelloPlayer
 
         public static Board copyBoardWithExtraPiece(Board board, int row, int column, bool PlayerTurn)
         {
+            //returns a copy of the board once another piece has been places at (row, column)
             Board boardCopy = new Board(setup: false);
             for (int i = 0; i < 8; i++)
             {
@@ -128,7 +125,7 @@ namespace OthelloPlayer
             {
                 if (Board.isFull(ref board))
                 {
-                    //if someone has won:
+                    //if someone has won give approriate points:
                     if(playerTurn)
                     {
                         if (Board.checkWinner(ref board) == "Black")
@@ -155,7 +152,7 @@ namespace OthelloPlayer
                     }
                 }
 
-                int tempScore = 0;
+                int nextGoScore = 0;
                 Board finalBoard = new Board();
                 for (int i = 0; i < 8; i++)
                 {
@@ -165,24 +162,21 @@ namespace OthelloPlayer
                         {
                             Board newBoard = new Board();
                             newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn); //copies board and adds new counter
-                            tempScore = minimaxResult(newBoard, !playerTurn, currentDepth+1);
-                            //debug:
-                          /*newBoard.displayBoard();
-                            Console.WriteLine("^Minimax result call at (" + i + ", " + a + "), depth:" + currentDepth);
-                            Console.WriteLine("at depth " + currentDepth + "tempScore is: " + tempScore);
-                            Console.ReadKey();*/
+                            nextGoScore = minimaxResult(newBoard, !playerTurn, currentDepth+1);
                             if (playerTurn)
                             {
-                                if (tempScore < bestScore)
+                                //If the AI's score next go is worse (for the AI) than the previous score, replace it.
+                                if (nextGoScore < bestScore)
                                 {
-                                    bestScore = tempScore;
+                                    bestScore = nextGoScore;
                                 }
                             }
                             if (!playerTurn)
                             {
-                                if (tempScore > bestScore)
+                                //If the player's score next go is better than the best previous, replace it.
+                                if (nextGoScore > bestScore)
                                 {
-                                    bestScore = tempScore;
+                                    bestScore = nextGoScore;
                                 }
                             }
                         }
@@ -201,11 +195,10 @@ namespace OthelloPlayer
             int score = 0;
             if (playerTurn)
             {
-                //ADD MINUS POINTS FOR OPPONENT BEING IN CORNER - is this working?
                 score = board.getBlackScore() - board.getWhiteScore();
                 for(int i = 2; i < 6; i++)
                 {
-                    //+1 for edges
+                    //+2 for edges
                     if(board.BoardState[0, i] == "B") score+= 2;
                     if (board.BoardState[i, 0] == "B") score+= 2;
                     if (board.BoardState[7, i] == "B") score+= 2;
@@ -235,10 +228,10 @@ namespace OthelloPlayer
                 for (int i = 2; i < 6; i++)
                 {
                     //+1 for edges
-                    if (board.BoardState[0, i] == "W" || board.BoardState[0, i] == "R") score+=2;
-                    if (board.BoardState[i, 0] == "W" || board.BoardState[i, 0] == "R") score+=2;
-                    if (board.BoardState[7, i] == "W" || board.BoardState[7, i] == "R") score+=2;
-                    if (board.BoardState[i, 7] == "W" || board.BoardState[i, 7] == "R") score +=2;
+                    if (board.BoardState[0, i] == "W") score+=2;
+                    if (board.BoardState[i, 0] == "W") score+=2;
+                    if (board.BoardState[7, i] == "W") score+=2;
+                    if (board.BoardState[i, 7] == "W") score+=2;
 
                     if (board.BoardState[0, i] == "B") score -= 2;
                     if (board.BoardState[i, 0] == "B") score -= 2;
@@ -248,10 +241,11 @@ namespace OthelloPlayer
                 }
 
                 //+3 for corners
-                if (board.BoardState[0, 0] == "W" || board.BoardState[0, 0] == "R") score += 20;
-                if (board.BoardState[7, 0] == "W" || board.BoardState[7, 0] == "R") score += 20;
-                if (board.BoardState[7, 7] == "W" || board.BoardState[7, 7] == "R") score += 20;
-                if (board.BoardState[0, 7] == "W" || board.BoardState[0, 7] == "R") score += 20;
+                //must check for R too while the board displays last move
+                if (board.BoardState[0, 0] == "W") score += 20;
+                if (board.BoardState[7, 0] == "W") score += 20;
+                if (board.BoardState[7, 7] == "W") score += 20;
+                if (board.BoardState[0, 7] == "W") score += 20;
 
                 if (board.BoardState[0, 0] == "B") score -= 20;
                 if (board.BoardState[7, 0] == "B") score -= 20;
@@ -839,6 +833,7 @@ namespace OthelloPlayer
 
             if (recentlyFlipped.Count != 0)
             {
+                //if it's the first display, this allows the recently flipped counters to show orange for 2 seconds
                 if (secondTimeBoard == false)
                 {
                     System.Threading.Thread.Sleep(2000);
@@ -846,7 +841,7 @@ namespace OthelloPlayer
                     {
                         BoardState[item.row, item.column] = "W";
                     }
-                    recentlyFlipped.Clear();
+                    recentlyFlipped.Clear(); 
                     secondTimeBoard = true;
                 }
             }
