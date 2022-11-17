@@ -14,7 +14,6 @@ namespace OthelloPlayer
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to Othello Player!");
             //set up board with starting discs
 
             Board gameBoard = new Board();
@@ -256,6 +255,7 @@ namespace OthelloPlayer
 
         public static int displayMenu()
         {
+            Console.WriteLine("Welcome to Othello Player!");
             Console.WriteLine(" > Play Game");
             Console.WriteLine("   Select difficulty");
             Console.WriteLine("   Exit");

@@ -833,22 +833,22 @@ namespace OthelloPlayer
 
             if (recentlyFlipped.Count != 0)
             {
-                //if it's the first display, this allows the recently flipped counters to show orange for 2 seconds
+                //if it's the first display, this allows the recently flipped counters to show orange for 2 secondss
                 if (secondTimeBoard == false)
                 {
                     System.Threading.Thread.Sleep(2000);
-                    foreach (var item in recentlyFlipped)
+                    foreach (var item in recentlyFlipped) 
                     {
                         BoardState[item.row, item.column] = "W";
                     }
-                    recentlyFlipped.Clear(); 
+                    recentlyFlipped.Clear();
                     secondTimeBoard = true;
                 }
             }
 
             if (secondTimeBoard == true)
             {
-                secondTimeBoard = false;
+                secondTimeBoard = false;                          
                 Console.Clear();
                 displayBoard();
             }
