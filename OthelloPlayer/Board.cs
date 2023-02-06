@@ -39,14 +39,18 @@ namespace OthelloPlayer
         {
             Board.coordinate bestPlace = new coordinate(0, 0);
             int topScore = 0;
+            //Loops through every square
             for (int i = 0; i < 7; i++)
             {
                 for (int a = 0; a < 7; a++)
                 {
+                    //if valid move
                     if (Board.checkValidMove(ref board, false, i, a))
                     {
+                        //if it turns more counters than the previous highest
                         if (turnCounters(ref board, i, a, false, false).Count() > topScore)
                         {
+                            //set as new best place and set topScore to the new highest number of counters turned
                             bestPlace = new coordinate(i, a);
                             topScore = turnCounters(ref board, i, a, false, false).Count();
                         }
@@ -56,31 +60,22 @@ namespace OthelloPlayer
             return bestPlace;
         }
 
-        /// <summary>
-        /// Evaluation function for a board position
-        /// </summary>
-        /// <param name="board">The board to evaluate</param>
-        /// <param name="PlayerTurn">True if it is the player's turn, and False otherwise</param>
-        /// <param name="row">The zero-indexed row to evaluate</param>
-        /// <param name="column">The zero-indexed column to evaluate</param>
-        /// <returns>An integer representing the goodness of the position</returns>
-        public int evaluatePlace(ref Board board, bool PlayerTurn, int row, int column)
-        {
-            return turnCounters(ref board, row, column, false, PlayerTurn).Count();
-        }
+        //Depth for minimax algorithm to run
+        private static int maxDepth = 4;
 
-        private static int maxDepth = 4
-            ;
-
+        //Minimax call
         public static coordinate minimaxCall(Board board)
         {
+            //base scores set
             int tempScore = 0;
             int lowestScore = 100000;
             coordinate bestSpot = new coordinate(0, 0);
+            //for every move on the board
             for (int i = 0; i < 8; i++)
             {
                 for (int a = 0; a < 8; a++)
                 {
+                    //if it's valid
                     if (checkValidMove(ref board, false, i, a))
                     {
                         Board newBoard = Board.copyBoardWithExtraPiece(board, i, a, false);
@@ -90,7 +85,7 @@ namespace OthelloPlayer
                         if (tempScore <= lowestScore)
                         {
                             lowestScore = tempScore;
-                            //sets bestSpot to best coordinate
+                            //sets bestSpot to best coordinate for minimising player's score
                             bestSpot = new coordinate(i, a);
                         }
                     }
@@ -110,17 +105,11 @@ namespace OthelloPlayer
                     boardCopy.BoardState[i, a] = board.BoardState[i, a];
                 }
             }
-            boardCopy.placeCounter(ref boardCopy, PlayerTurn, row, column);
+            Board.turnCounters(ref boardCopy, row, column, true, PlayerTurn);
             return boardCopy;
         }
 
-        /// <summary>
-        /// Returns the best spot to go, looking ahead to maxDepth.
-        /// </summary>
-        /// <param name="board"></param>
-        /// <param name="playerTurn"></param>
-        /// <param name="currentDepth"></param>
-        /// <returns></returns>
+        //Called from minimax call on the move AFTER each possible move from the board state given and returns a value representing how good that spot is (for the player)
         public static int minimaxResult(Board board, bool playerTurn, int currentDepth)
         {
 
@@ -133,7 +122,7 @@ namespace OthelloPlayer
             {
                 if (Board.isFull(ref board))
                 {
-                    //if someone has won give appropriate points:
+                    //if someone has wins give appropriate points:
                     if(playerTurn)
                     {
                         if (Board.checkWinner(ref board) == "Black")
@@ -162,14 +151,17 @@ namespace OthelloPlayer
 
                 int nextGoScore = 0;
                 Board finalBoard = new Board();
+                //for each square on the board
                 for (int i = 0; i < 8; i++)
                 {
                     for (int a = 0; a < 8; a++)
                     {
+                        //if it's a valid move
                         if (checkValidMove(ref board, false, i, a))
                         {
                             Board newBoard = new Board();
                             newBoard = copyBoardWithExtraPiece(board, i, a, playerTurn); //copies board and adds new counter
+                            //calls minimax again on this move, with depth increased and on the other player's turn
                             nextGoScore = minimaxResult(newBoard, !playerTurn, currentDepth+1);
                             if (playerTurn)
                             {
@@ -194,6 +186,7 @@ namespace OthelloPlayer
             }
             else
             {
+                //if it's at it's max depth, evaluate the board state at this point for the player who's go it is.
                 int evaluate = Board.evaluateBoard(board, playerTurn);
                 return evaluate;
             }
@@ -203,6 +196,7 @@ namespace OthelloPlayer
             int score = 0;
             if (playerTurn)
             {
+                //base score given from difference between the number of counters on the board (player - opponent's)
                 score = board.getBlackScore() - board.getWhiteScore();
                 for(int i = 2; i < 6; i++)
                 {
@@ -233,6 +227,7 @@ namespace OthelloPlayer
 
             else
             {
+                //repeated in case of other player's go
                 score = board.getWhiteScore() - board.getBlackScore();
                 for (int i = 2; i < 6; i++)
                 {
@@ -262,34 +257,24 @@ namespace OthelloPlayer
                 if (board.BoardState[0, 7] == "B") score -= 20;
 
             }
-            //debug:
-            /*board.displayBoard();
-            Console.WriteLine("evaluation called with board^, score is: " + score + "on player turn?: " + playerTurn);
-            Console.WriteLine("Black Score = " + board.getBlackScore() + ", White Score = " + board.getWhiteScore());
-            Console.ReadKey();*/
+            //returns the 'goodness' of the board state
             return score;
-
-        }
-
-        public void placeCounter(ref Board board, bool PlayerTurn, int row, int column)
-        {
-
-            turnCounters(ref board, row, column, true, PlayerTurn);
 
         }
 
         public static bool checkValidMove(ref Board board, bool PlayerTurn, int row, int column)
         {
+            //checks if out of bounds of the board
             if (row > 7 || row < 0 || column > 7 || column < 0)
             {
                 return false;
             }
-
+            //checks if counter already there
             if (board.BoardState[row, column] != " ")
             {
                 return false;
             }
-
+            //checks if it turns any counters
             if (turnCounters(ref board, row, column, false, PlayerTurn).Count != 0)
             {
                 return true;
@@ -305,12 +290,12 @@ namespace OthelloPlayer
             {
                 for (int a = 0; a < 8; a++)
                 {
-
-                    if (turnCounters(ref board, i, a, false, true).Count != 0)
+                    //if there is a valid move for neither player, return true as the board is full/game is ended
+                    if (Board.checkValidMove(ref board, true, i, a))
                     {
                         return false;
                     }
-                    if (turnCounters(ref board, i, a, false, false).Count != 0)
+                    if (Board.checkValidMove(ref board, false, i, a))
                     {
                         return false;
                     }
@@ -321,6 +306,7 @@ namespace OthelloPlayer
 
         public static bool canPlaceCounter(ref Board board, bool PlayerTurn)
         {
+            //checks if a player can make a move
             for (int i = 0; i < 8; i++)
             {
                 for (int a = 0; a < 8; a++)
@@ -334,6 +320,7 @@ namespace OthelloPlayer
             return false;
         }
 
+        //check who won the game
         public static string checkWinner(ref Board board)
         {
             int onePoints = 0;
@@ -364,15 +351,18 @@ namespace OthelloPlayer
             else return "Draw";
         }
 
+        //checks which counters (if any) a move turns and changes the board accordingly if 'flip' is true
         public static List<coordinate> turnCounters(ref Board board, int row, int column, bool flip, bool PlayerTurn)
         {
-
+            //create lists to turn discs permanantly and temporarily to facilitate yellow highlighting
             List<coordinate> discsToTurn = new List<coordinate>();
             List<coordinate> tempDiscsToTurn = new List<coordinate>();
 
+            //checks that there is not a counter already there
             if (!(board.BoardState[row, column] == " ")) return discsToTurn;
 
-             string myColour;
+            //variables holding 'B' or 'W' representing the counters how they are held in the board state array
+            string myColour;
             string notMyColour;
             if (PlayerTurn)
             {
@@ -678,7 +668,7 @@ namespace OthelloPlayer
             //CHECKED ALL DIRECTIONS
 
 
-            //flip counters
+            //flip counters if flip is true
             if (flip)
             {
 
@@ -688,6 +678,7 @@ namespace OthelloPlayer
                 {
                     flipToColour = "B";
                 }
+                //flip to R yellow counters which have just been flipped
                 else flipToColour = "R";
                 board.BoardState[row, column] = flipToColour;
                 foreach (var item in discsToTurn)
@@ -707,6 +698,7 @@ namespace OthelloPlayer
 
         public void setUpBoard()
         {
+            //sets up board at start of the game
             for (int i = 0; i < 8; i++)
             {
                 for (int a = 0; a < 8; a++)
@@ -714,30 +706,10 @@ namespace OthelloPlayer
                     BoardState[i, a] = " ";
                 }
             }
-            BoardState[3, 3] = "W"; // should be W
-            BoardState[4, 4] = "W"; // should be W
-            BoardState[4, 3] = "B"; // should be B
-            BoardState[3, 4] = "B"; // should be B
-
-            //trial board:
-            /*
-            for (int i = 0; i < 8; i++)
-            {
-                for (int a = 0; a < 8; a++)
-                {
-                    BoardState[i, a] = "W";
-                }
-            }
+            BoardState[3, 3] = "W";
+            BoardState[4, 4] = "W";
+            BoardState[4, 3] = "B";
             BoardState[3, 4] = "B";
-            BoardState[3, 6] = " ";
-            BoardState[5, 4] = " ";
-            BoardState[5, 5] = " ";
-            BoardState[4, 4] = " ";
-            BoardState[2, 3] = " ";
-            BoardState[2, 2] = " ";
-            */
-
-
 
         }
 
@@ -768,11 +740,12 @@ namespace OthelloPlayer
 
         }
 
+        //represents whether board is 'flashing' yellow or not
         private bool secondTimeBoard = false;
 
         public void displayBoard()
         {
-
+            //prints board and scores in console
             Console.BackgroundColor = ConsoleColor.DarkGreen;
             Console.Write("    - A --- B --- C --- D --- E --- F --- G --- H --");
             Console.BackgroundColor = ConsoleColor.Black;
@@ -853,6 +826,7 @@ namespace OthelloPlayer
                 }
             }
 
+            //prints normal board with no yellows, after highlighting
             if (secondTimeBoard == true)
             {
                 secondTimeBoard = false;                          

@@ -46,6 +46,7 @@ namespace OthelloPlayer
 
         public static void displayDifficulty()
         {
+            //sets up menu for selecting difficulty
             Console.WriteLine(" Select Difficulty: ");
             Console.WriteLine(" > Amateur");
             Console.WriteLine("   Professional");
@@ -80,6 +81,7 @@ namespace OthelloPlayer
                     }
                 }
 
+                //allows for visual movement between options
                 if (choice.Key == ConsoleKey.UpArrow && option > 1)
                 {
                     Console.CursorLeft = 0;
@@ -109,6 +111,7 @@ namespace OthelloPlayer
 
         }
 
+        //used to get column letters into numbers
         public static int LetterToInt(char letter)
         {
             string strLetter = letter.ToString().ToUpper();
@@ -117,6 +120,7 @@ namespace OthelloPlayer
             return UpperCaseChar - (int)'A';
         }
 
+        //changes a number to corresponding letter in ASCII values
         public static char intToLetter(int num)
         {
             num += (int)'A';
@@ -125,6 +129,7 @@ namespace OthelloPlayer
             return UpperCaseChar;
         }
 
+        //runs the game
         public static void playGame(ref Board board)
         {
             bool PlayerTurn = true;
@@ -139,12 +144,15 @@ namespace OthelloPlayer
                     Console.WriteLine("Player One (Black)'s turn...");
                     Console.ForegroundColor = ConsoleColor.White;
 
+                    //checks if player can play at all
                     if (Board.canPlaceCounter(ref board, PlayerTurn))
                     {
                         int tries = 0;
+                        //checks if move entered/set is valid and continues to run while not
                         while (!Board.checkValidMove(ref board, true, row, column))
                         {
                             tries++;
+                            //stops error message running the first time it asks
                             if (tries > 1)
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
@@ -152,6 +160,7 @@ namespace OthelloPlayer
                                 Console.ForegroundColor = ConsoleColor.White;
                             }
 
+                            //move inputs
                             Console.Write("Enter column: ");
                             try
                             {
@@ -174,14 +183,14 @@ namespace OthelloPlayer
 
                         }
 
-
-                        board.placeCounter(ref board, PlayerTurn, row, column);
+                        //Places counter in selected spot and displays board
+                        Board.turnCounters(ref board, row, column, true, PlayerTurn);
                         Console.Clear();
                         board.displayBoard();
                     }
                     else
                     {
-
+                        //if there is no valid move:
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Player 1 can't go anywhere! Go skipped...");
                         Console.ForegroundColor = ConsoleColor.White;
@@ -208,19 +217,19 @@ namespace OthelloPlayer
 
                         if (difficulty == "Amateur")
                         {
-                            
+                            //gets move which turns most counters
                             spotPick = Board.getBestPlace(ref board, false);
                         }
 
                         if (difficulty == "Professional")
                         {
-
+                            //runs minimax on current board state
                             spotPick = Board.minimaxCall(board);
 
                         }
 
-
-                        board.placeCounter(ref board, PlayerTurn, spotPick.row, spotPick.column);
+                        //places counter in selected place and displays board
+                        Board.turnCounters(ref board, spotPick.row, spotPick.column, true, PlayerTurn);
                         Console.Clear();
                         board.displayBoard();
                         Console.WriteLine("AI placed at (" + intToLetter(spotPick.column) + ", " + (spotPick.row + 1) + "), the counters flipped turn yellow shortly.");
@@ -230,6 +239,7 @@ namespace OthelloPlayer
 
                     else
                     {
+                        //if there is no valid move:
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("Player 2 can't go anywhere! Go skipped...");
                         Console.ForegroundColor = ConsoleColor.White;
@@ -238,9 +248,11 @@ namespace OthelloPlayer
                     PlayerTurn = true;
                 }
             }
+            //When game ends
             Console.WriteLine("GAME OVER, winner was...");
             System.Threading.Thread.Sleep(3000);
             Console.ForegroundColor = ConsoleColor.Yellow;
+            //Winner declared
             Console.WriteLine(Board.checkWinner(ref board) + "!");
             Console.WriteLine("Black Score: " + board.getBlackScore() + ", White Score: " + board.getWhiteScore());
 
@@ -249,6 +261,7 @@ namespace OthelloPlayer
 
         public static int displayMenu()
         {
+            //Starting menu displayed
             Console.WriteLine("Welcome to Othello Player!");
             Console.WriteLine(" > Play Game");
             Console.WriteLine("   Select difficulty");
