@@ -61,7 +61,8 @@ namespace OthelloPlayer
             return turnCounters(ref board, row, column, false, PlayerTurn).Count();
         }
 
-        private static int maxDepth = 5;
+        private static int maxDepth = 4
+            ;
 
         public static coordinate minimaxCall(Board board)
         {
