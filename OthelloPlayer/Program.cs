@@ -201,13 +201,14 @@ namespace OthelloPlayer
                         Board.coordinate spotPick = new Board.coordinate(0, 0);
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("AI (White)'s turn, thinking...");
+                        System.Threading.Thread.Sleep(1500);
                         Console.ForegroundColor = ConsoleColor.White;
 
 
 
                         if (difficulty == "Amateur")
                         {
-                            System.Threading.Thread.Sleep(1500);
+                            
                             spotPick = Board.getBestPlace(ref board, false);
                         }
 
