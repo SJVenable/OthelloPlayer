@@ -10,9 +10,11 @@ namespace OthelloPlayer
     {
         public struct coordinate
         {
+            //Create structure to hold coordinates of a counter
             public int column;
             public int row;
 
+            //Create constructor to set values
             public coordinate(int setRow, int setColumn)
             {
                 column = setColumn;
@@ -20,8 +22,10 @@ namespace OthelloPlayer
             }
         }
 
+        //Create 2d array to hold board state
         public string[,] BoardState = new string[8, 8];
 
+        //Allows for making a board without setting it up
         public Board(bool setup = true)
         {
             if (setup)
@@ -30,22 +34,26 @@ namespace OthelloPlayer
             }
         }
 
-        public static coordinate getRandomPlace(ref Board board, bool playerTurn)
+        //Method to find best spot to play based on amateur AI ( spot which turns most counters )
+        public static coordinate getBestPlace(ref Board board, bool playerTurn)
         {
-            List<Board.coordinate> possiblePlaces = new List<Board.coordinate>();
+            Board.coordinate bestPlace = new coordinate(0, 0);
+            int topScore = 0;
             for (int i = 0; i < 7; i++)
             {
                 for (int a = 0; a < 7; a++)
                 {
                     if (Board.checkValidMove(ref board, false, i, a))
                     {
-                        possiblePlaces.Add(new Board.coordinate(i, a));
+                        if (turnCounters(ref board, i, a, false, false).Count() > topScore)
+                        {
+                            bestPlace = new coordinate(i, a);
+                            topScore = turnCounters(ref board, i, a, false, false).Count();
+                        }
                     }
                 }
             }
-            Random rnd = new Random();
-            int pick = rnd.Next(0, possiblePlaces.Count);
-            return possiblePlaces[pick];
+            return bestPlace;
         }
 
         /// <summary>
@@ -61,14 +69,13 @@ namespace OthelloPlayer
             return turnCounters(ref board, row, column, false, PlayerTurn).Count();
         }
 
-        private static int maxDepth = 5;
+        private static int maxDepth = 2;
 
         public static coordinate minimaxCall(Board board)
         {
             int tempScore = 0;
-            int topScore = 100000;
+            int lowestScore = 100000;
             coordinate bestSpot = new coordinate(0, 0);
-            //coordinate bestSpot = Board.getRandomPlace(ref board, false);
             for (int i = 0; i < 8; i++)
             {
                 for (int a = 0; a < 8; a++)
@@ -79,9 +86,9 @@ namespace OthelloPlayer
                         //call minimax on this move, player's turn
                         tempScore = Board.minimaxResult(newBoard, true, 0);
                         //minimise the player's score
-                        if (tempScore <= topScore)
+                        if (tempScore <= lowestScore)
                         {
-                            topScore = tempScore;
+                            lowestScore = tempScore;
                             //sets bestSpot to best coordinate
                             bestSpot = new coordinate(i, a);
                         }
@@ -125,7 +132,7 @@ namespace OthelloPlayer
             {
                 if (Board.isFull(ref board))
                 {
-                    //if someone has won give approriate points:
+                    //if someone has won give appropriate points:
                     if(playerTurn)
                     {
                         if (Board.checkWinner(ref board) == "Black")
@@ -222,12 +229,13 @@ namespace OthelloPlayer
                 if (board.BoardState[0, 7] == "W") score -= 20;
 
             }
+
             else
             {
                 score = board.getWhiteScore() - board.getBlackScore();
                 for (int i = 2; i < 6; i++)
                 {
-                    //+1 for edges
+                    //+2 for edges
                     if (board.BoardState[0, i] == "W") score+=2;
                     if (board.BoardState[i, 0] == "W") score+=2;
                     if (board.BoardState[7, i] == "W") score+=2;
@@ -312,7 +320,6 @@ namespace OthelloPlayer
 
         public static bool canPlaceCounter(ref Board board, bool PlayerTurn)
         {
-            //changed from < 7 right?
             for (int i = 0; i < 8; i++)
             {
                 for (int a = 0; a < 8; a++)
@@ -330,7 +337,6 @@ namespace OthelloPlayer
         {
             int onePoints = 0;
             int twoPoints = 0;
-            //changed from <7 right?
             for (int i = 0; i < 8; i++)
             {
                 for (int a = 0; a < 8; a++)
@@ -833,7 +839,7 @@ namespace OthelloPlayer
 
             if (recentlyFlipped.Count != 0)
             {
-                //if it's the first display, this allows the recently flipped counters to show orange for 2 secondss
+                //if it's the first display, this allows the recently flipped counters to show orange for 2 seconds
                 if (secondTimeBoard == false)
                 {
                     System.Threading.Thread.Sleep(2000);
@@ -852,13 +858,6 @@ namespace OthelloPlayer
                 Console.Clear();
                 displayBoard();
             }
-
-
-
         }
-
-
-
-
     }
 }

@@ -152,28 +152,24 @@ namespace OthelloPlayer
                                 Console.ForegroundColor = ConsoleColor.White;
                             }
 
-                            do
+                            Console.Write("Enter column: ");
+                            try
                             {
-                                Console.Write("Enter column: ");
-                                try
-                                {
-                                    column = LetterToInt(char.Parse(Console.ReadLine().Substring(0, 1)));
-                                }
-                                catch (Exception e)
-                                {
-                                    column = -1;
-                                }
-                                Console.Write("Enter row: ");
-                                try
-                                {
-                                    row = int.Parse(Console.ReadLine()) - 1;
-                                }
-                                catch (Exception e)
-                                {
-                                    row = -1;
-                                }
+                                column = LetterToInt(char.Parse(Console.ReadLine().Substring(0, 1)));
                             }
-                            while (row == -1);
+                            catch (Exception e)
+                            {
+                                column = -1;
+                            }
+                            Console.Write("Enter row: ");
+                            try
+                            {
+                                row = int.Parse(Console.ReadLine()) - 1;
+                            }
+                            catch (Exception e)
+                            {
+                                row = -1;
+                            }
 
 
                         }
@@ -205,14 +201,14 @@ namespace OthelloPlayer
                         Board.coordinate spotPick = new Board.coordinate(0, 0);
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("AI (White)'s turn, thinking...");
-                        System.Threading.Thread.Sleep(1500);
                         Console.ForegroundColor = ConsoleColor.White;
 
 
 
                         if (difficulty == "Amateur")
                         {
-                            spotPick = Board.getRandomPlace(ref board, PlayerTurn);
+                            System.Threading.Thread.Sleep(1500);
+                            spotPick = Board.getBestPlace(ref board, false);
                         }
 
                         if (difficulty == "Professional")
@@ -239,18 +235,15 @@ namespace OthelloPlayer
 
                     }
                     PlayerTurn = true;
-
                 }
-
-
             }
             Console.WriteLine("GAME OVER, winner was...");
             System.Threading.Thread.Sleep(3000);
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(Board.checkWinner(ref board) + "!");
+            Console.WriteLine("Black Score: " + board.getBlackScore() + ", White Score: " + board.getWhiteScore());
 
             Console.ReadKey();
-
         }
 
         public static int displayMenu()
