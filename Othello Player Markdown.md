@@ -14,7 +14,7 @@ Computer Science NEA
 **Centre Name:** Barton Peveril College  
 **Centre Number:** 58231
 
-# 0 Contents {#0-contents}
+# 0 Contents
 
 [**0 Contents**](#0-contents)
 
@@ -92,7 +92,7 @@ Computer Science NEA
 
 [5.1 Prototype Code](#5.1-prototype-code)
 
-# 1 Analysis {#1-analysis}
+# 1 Analysis
 
 ## 1.1 Statement of Problem {#1.1-statement-of-problem}
 
