@@ -1,4 +1,4 @@
-
+See [Othello Player Project Write-Up](./Othello Player Project Write-Up) for proper document (incl. images etc.)
 
 # 
 
@@ -85,12 +85,6 @@ Computer Science NEA
 [4.3.1 Conclusions on Feedback](#4.3.1-conclusions-on-feedback)
 
 [4.4 System Improvements](#4.4-system-improvements)
-
-[**5 Technical Solution**](#5-technical-solution)
-
-[Contents page for code:](#contents-page-for-code:)
-
-[5.1 Prototype Code](#5.1-prototype-code)
 
 # 1 Analysis
 
