@@ -94,11 +94,11 @@ Computer Science NEA
 
 # 1 Analysis
 
-## 1.1 Statement of Problem {#1.1-statement-of-problem}
+## 1.1 Statement of Problem
 
 My friend Neev finds it difficult to get opponents to practise playing Othello with, and this stops him improving as fast as his friends, some of whom pay for coaches which really helps them get more chance to practise. He wants to improve without the cost of paying for a trainer.
 
-## 1.2 Background {#1.2-background}
+## 1.2 Background
 
 The game Othello was released in 1975 and begins as pictured below, with one team playing with white counters and the other black.
 
@@ -106,19 +106,19 @@ The game Othello was released in 1975 and begins as pictured below, with one tea
 The objective is to have the majority of your colour counters/discs on the board at the end of the game. From the starting position, black takes their turn first and (unless one player has nowhere to place their counter), the players take it in turns to play until there are no moves left to play for either player (usually when the board is full). A turn consists of placing a counter on a square that outflanks one or more of the opponents discs, and these disks are then flipped. Outflanking means to place a disc on the board so that your opponent's pieces along a row, column, or diagonal are bordered at each end by a disc of your colour. This is shown below.  
 ![][image2]Disk placed by arrow    ![][image3]Tiles flipped
 
-## 1.3 End Users {#1.3-end-users}
+## 1.3 End Users
 
-### 1.3.1 Primary End User {#1.3.1-primary-end-user}
+### 1.3.1 Primary End User
 
 My end user is Neev, my friend (an amateur Othello player) who asked me for an Othello game to practise his skills against. I will be communicating with him throughout my project to make sure I fulfil his requirements for the game so he can learn from playing against the AI.
 
-### 1.3.2 Expert User {#1.3.2-expert-user}
+### 1.3.2 Expert User
 
 I will also have an expert user Matt, a Computer Science teacher at my college, as he has experience with algorithms such as minimax and can give some advice and helpful feedback on my methods and objectives. I will interview him as well as my end user to get advice and feedback on my algorithms.
 
-## 1.4 Initial Research {#1.4-initial-research}
+## 1.4 Initial Research
 
-### 1.4.1 Existing, similar programs {#1.4.1-existing,-similar-programs}
+### 1.4.1 Existing, similar programs
 
 There have been many othello-playing AIs already made, such as Saio, Ntest and Cyrano, however they’re not well documented online so it’s not easy to make too many comparisons between these engines and my own. Owen Shevlin, a student at Cardiff University, wrote a paper on creating an AI to play Othello¹, and he used the Minimax algorithm alongside a Monte Carlo Tree Search, so mine will be different in that I’ll be using a simpler minimax algorithm to focus on minimising bad moves rather than choosing the very best one.
 
@@ -143,7 +143,7 @@ I think it would be a helpful addition to my project to ensure this is clearer, 
 
 ⁴“Othello Game.” *hewgill.com*, https://hewgill.com/othello/. Accessed 2 September 2022\.
 
-### 1.4.2 Potential algorithms {#1.4.2-potential-algorithms}
+### 1.4.2 Potential algorithms
 
 The main algorithm of my project will be the minimax algorithm, which will be used to determine where the professional AI moves. The basic idea of it is to search through every possible move at a point in the game, every move from that point and so on down to the depth that it’s searching. When it gets to the bottom of this move tree, it evaluates the board state at that point, backpropagates back up to the first move and chooses the one which minimises the potential for the opponent to be in a good position in some number of moves time. This should provide a good standard of play, as it should at least avoid the worst moves. Here’s a scaled down example below. 
 
@@ -152,7 +152,7 @@ In this example, A is the current board state. B and C are possible board states
 
 I’m also considering using alpha-beta pruning along with this algorithm to improve its efficiency and therefore its strength as an opponent, but I’ll ask my expert user Matt about the possibility of this before moving forward, as it may be too much to include. The advantage of using Alpha-Beta pruning is that it may allow me to set the depth of the minimax’s search higher, as the idea of this variation of minimax is to ‘prune’ branches of the move tree which when evaluated, are already worse than a previously examined branch and can therefore be left without further searching, saving computational complexity and therefore allowing for a deeper search which should provide a better move choice.
 
-### 1.4.3 Initial interviews {#1.4.3-initial-interviews}
+### 1.4.3 Initial interviews
 
 This is the transcript of my Interview with Neev, my end user:
 
@@ -204,7 +204,7 @@ I think a minimax algorithm on it’s own would be the best option for me, as wi
 As Matt points out in response to question 5, working out how to evaluate the score of a move and compare the options to one another will be one of the most difficult but important parts of my project, so I plan to research this thoroughly and teach myself the basics of the game so this might show in the AI’s playing strategy.  
 In terms of determining the AI’s success, I believe the best route forward is to collect as much data from human players as I can, as this will give me the most accurate data, and although it’s not so easy to collect, I’ll ask friends with limited knowledge of the game to play, allowing me to work out how the AI will fare against this level of players as this is what it’s aimed at. 
 
-### 1.4.4 Key components {#1.4.4-key-components}
+### 1.4.4 Key components
 
 Having researched other examples of Othello games with AI opponents, there are some components shared by most (if not all ) versions of the game, that I will also have to implement as detailed here.
 
@@ -224,9 +224,9 @@ For an AI to tackle the playing of Othello, it will need the following:
 A good thing to note for the use of a heuristic function is that a strategy of just choosing the move which will turn over the most discs is often very easily countered by a good player, as seen below, black has just one disc, but if played out, black will win 40-24 due to getting all the remaining moves. This (although a dramatic example) shows that it is likely for the best algorithms to need to implement a more complex algorithm if they are to be successful.  
 ![][image8]
 
-## 1.5 Further Research {#1.5-further-research}
+## 1.5 Further Research
 
-### 1.5.1 Prototype {#1.5.1-prototype}
+### 1.5.1 Prototype
 
 Code at the end of this analysis. See appendix Page 60  
 I decided to make my prototype a basic two-player version of the game, where you play against another person (or yourself). This required me to implement a large chunk of the final program \- menu system, move selectors, disc turnover checkers, valid move placement checkers \- and showed me that it’s definitely possible to complete in the time I have, while giving me a good foundation to work on making the AI’s to play against.
@@ -251,7 +251,7 @@ So far I’ve found no bugs and it works well, so I’m confident to move onto m
 
 **Code for prototype: Page 60**
 
-### 1.5.2 Second interview {#1.5.2-second-interview}
+### 1.5.2 Second interview
 
 This is the transcript from my second interview with Matt Arnold, my expert user.
 
@@ -267,7 +267,7 @@ This is the transcript from my second interview with Matt Arnold, my expert user
 
 The comment on the letters and numbers on the comments was helpful, as I previously did have numbers on both but decided to change it for ease of use. I also agree that when the AI is introduced, I need to make it clear where it’s gone and also which pieces it has turned over. To remedy this, I plan to add a pause and a message saying ‘AI is thinking… ’ for a few seconds (possibly while the minimax program runs as far as it can in the time) before changing the board and the score. I will also set the pieces which are newly placed/flipped to be yellow for a couple of seconds and output text saying where the AI went, so the user knows what happened.
 
-## 1.6 Objectives {#1.6-objectives}
+## 1.6 Objectives
 
 1. Develop two AI’s which can choose moves and play against a user  
    1. 2 difficulties of AI opponents to play against: amateur and professional.   
@@ -294,7 +294,7 @@ The comment on the letters and numbers on the comments was helpful, as I previou
 9. User can exit the game from the menu  
    
 
-## 1.7 Modelling {#1.7-modelling}
+## 1.7 Modelling
 
 **Flowchart of game play from user perspective:**  
 Here you can see a flowchart showing the gameplay how the user will use it. Every turn it checks if the board is full, and if so, it checks if the player can go anywhere, and skips their turn or lets them enter their counter placement depending on this. The AI then has the same check and it goes back to the start, checking if the board is full.  
@@ -310,13 +310,13 @@ I created the Board class to manage all the methods related to accessing / editi
 
 # 2 Design
 
-## 2.1 Call-Hierarchy Flowchart: {#2.1-call-hierarchy-flowchart:}
+## 2.1 Call-Hierarchy Flowchart:
 
 This is a flowchart detailing which methods are called from where. Blue boxes represent main subroutines, green boxes represent subroutines, and yellow boxes show functions.  
 The layout shown here allowed me to split apart functions as much as possible, to make it easier for me to set up, organise and debug.   
 ![][image16]
 
-## 2.2 MinimaxResult / MinimaxCall Explanation: {#2.2-minimaxresult-/-minimaxcall-explanation:}
+## 2.2 MinimaxResult / MinimaxCall Explanation:
 
 The Minimax Algorithm is called every time the AI needs to choose a place to play. MinimaxCall is called and given the board state, and from there calls MinimaxResult. It returns the move which minimises the strength of the player’s subsequent goes, using the heuristic function (evaluateBoard) to determine how good a board state is. It’s described in detail below:
 
@@ -334,14 +334,14 @@ The Minimax Algorithm is called every time the AI needs to choose a place to pla
       3) Then return bestScore after doing this for all valid moves.  
    3) If it is at max depth then return the value from evaluateBoard(Board board, bool PlayerTurn), which is calculated by finding the difference between black and white’s scores, \+or- depending on whose turn it is, and adding appropriate values for number of edges and corners held by each.
 
-### 2.2.1 Improvements {#2.2.1-improvements}
+### 2.2.1 Improvements
 
 The minimax algorithm, although working, minimises the ‘score’ that the opponent could achieve on subsequent goes, without taking into account how the AI will play on those goes, as it simulates every possible move that the AI could play from a board state. This means it can reject making a move because of a bad ‘score’ that the AI could end up with, should it play badly in the following moves. This is an unnecessary consideration, as the AI will only choose one move for each board state, meaning that taking all the possible moves it could make into consideration is useless, and skews the results so that it doesn’t effectively minimise the opponent’s score.   
 Another improvement I would make were I to do this project again would be to the heuristic function that the minimax algorithm uses. I have varied the extra points assigned to edge and corner spaces to consider how they affect the play of the AI to settle on their current values, but I think I could improve how the AI values a board state by randomly sampling games from that point to completion and setting the score to the percentage of wins to losses that occurred subsequent to it. This would avoid any arbitrary assignments of value to corners and edges where clearly the game isn’t so simple.
 
-## 2.3 Other Algorithms {#2.3-other-algorithms}
+## 2.3 Other Algorithms
 
-### 2.3.1 Amateur AI Algorithm {#2.3.1-amateur-ai-algorithm}
+### 2.3.1 Amateur AI Algorithm
 
 This is a simple algorithm which governs the choice of the amateur AI on each move. It selects the move which turns the most opposing counters as possible, using the steps detailed below:
 
@@ -354,7 +354,7 @@ This is a simple algorithm which governs the choice of the amateur AI on each mo
   * topScore is set to the number of counters that move would turn  
 * bestPlace is then returned.
 
-### 2.3.2 Valid Move Function {#2.3.2-valid-move-function}
+### 2.3.2 Valid Move Function
 
 The valid move function checks is given a coordinate and the board state and returns whether it is a valid move. How it works (including the turnCounters function) is shown below:
 
@@ -367,7 +367,7 @@ The valid move function checks is given a coordinate and the board state and ret
 * It checks in each direction whether there is a counter of the opposite colour next to it. If so, it continues while the next square along is still of the opposing colour, until it reaches either the given player’s colour (in which case it is a legal move and the flanked counters are added to a list to be returned by the function) or it reaches the edge of the board, which means it does not turn counters in that direction.  
 * If the move turns no counters, the list returned by the function is empty, signalling that it is not valid. Otherwise a list is returned containing all the counters that would be flipped by the given move.
 
-## 2.4 Depth Selection {#2.4-depth-selection}
+## 2.4 Depth Selection
 
 There was a tradeoff to be made between the skill of the professional AI using a minimax algorithm and the time it takes to choose a move. I had previously asked Neev what the limit would be with regard to how long he’d wait for a move (knowing that the longer this takes the better the chosen move should be ) and he said that any more than 5 seconds would interfere with his concentration and the experience of playing against the AI. 
 
@@ -381,15 +381,15 @@ What this testing did provide was a better idea of how high the depth could be s
 ![][image19]  
 These tables show the differences between the play of each depth level, and the highlighted rows show where they differ from the others in the groups I’ve put them in.
 
-## 2.5 Data structures {#2.5-data-structures}
+## 2.5 Data structures
 
 The board is stored in a 2-dimensional array of characters (chars). I chose this as it’s the best data structure to hold a board state, as an Othello board is a 2-dimensional grid, so a data structure that matches that perfectly is an obvious choice.
 
-## 2.6 Technologies  {#2.6-technologies}
+## 2.6 Technologies
 
 C\# was the best option for me, as I have had experience with java (a similar syntax) and c\# before, and it does what I need it to as a high-level language, and I have a good knowledge of using Visual Studio with it and linking that to Github so I can access code from home and at college.
 
-## 2.7 Human-computer interaction {#2.7-human-computer-interaction}
+## 2.7 Human-computer interaction
 
 I kept the game’s interface as basic and simple as possible, as I wanted to be able to focus on improving the game and I wanted users to be able to get straight into a game without scrolling through too many menu screens. As a result, there is one menu which opens at the start of the program, showing this:   
 ![][image20]
@@ -402,7 +402,7 @@ Or if you’d like to change the difficulty (by default it’s set to profession
 Once chosen, you would select Exit to Menu, where you can select Play Game to play with your chosen difficulty.  
 ![][image24]
 
-# 3 Testing {#3-testing}
+# 3 Testing
 
 **Testing Video: https://youtu.be/rXU2yhmfIWY**
 
@@ -434,9 +434,9 @@ Once chosen, you would select Exit to Menu, where you can select Play Game to pl
 | 24 | Each piece should be should be shown on the board after a placement | 2f: Display the new board state correctly after each go. | Turn has just taken place | Board is shown correctly | Pass | 00:16 |
 | 25 | Full Game plays through successfully | 1.Othello game AI that developing players can train on. | Game played | Game plays successfully | Pass | 01.50 |
 
-# 4 Evaluation {#4-evaluation}
+# 4 Evaluation
 
-## 4.1 Overall Effectiveness of the System {#4.1-overall-effectiveness-of-the-system}
+## 4.1 Overall Effectiveness of the System
 
 The system does what I set out to create, and does so efficiently, but I would have liked to make a higher standard of AI player using either a different algorithm or an improved version of minimax, as sometimes it makes moves that even an amateur human would never make, that disadvantages itself and sometimes imbalances the game by giving away a corner or suchlike. This sometimes makes the game too easy for the player and results in it being suboptimal practice for Neev or another user. Usually though, the AI is a good opponent and makes for good practice for an improving player and allows them to practice when there isn’t someone else around. The system is intuitive to interact with, allowing the player to focus on the game without unnecessary distractions, with only the column and row of the counter needed to be input by the player. 
 
@@ -450,7 +450,7 @@ The Amatuer AI won only 28% of the time, using a strategy of choosing the move w
 ![][image26]  
 My minimax algorithm did not perform as well as I had expected. It won 42% of the time in this sample, which although not a bad outcome, I had hoped that the ‘foresight’ that the minimax algorithm provides would have had a greater effect on the AI’s play. Having played a lot of games against it myself, I noticed some interesting things about the way it plays. I would have expected it to value taking corners much more than it did (despite my explicitly assigned value given to them in the evaluateBoard function) \- sometimes ignoring an opportunity to take a corner for several turns in a row. It did seem to limit my options which was good, as I rarely got the chance to take a big swathe of its pieces during the game, but as the game got near the end I found much more chance to take large numbers of pieces, and I suspect that an increase in the depth (if made feasible through alpha-beta pruning or another method) might prevent this drop in it’s ability to minimise my strongest moves nearer the end as it might ‘plan’ better for this.
 
-## 4.2 Evaluation of Objectives {#4.2-evaluation-of-objectives}
+## 4.2 Evaluation of Objectives
 
 Objectives have been copied below for ease of reference:
 
@@ -511,7 +511,7 @@ Done as shown in testing
 
 Done, but it might have been more beneficial to allow users to leave during the game, as there’s not much reason to leave from the menu when the program has only just started. Either way they can leave by closing the window so this isn’t essential.
 
-## 4.3 End User Feedback {#4.3-end-user-feedback}
+## 4.3 End User Feedback
 
 Here’s the transcript for my final feedback interview with Neev:
 
@@ -527,11 +527,11 @@ The main improvement I could think of would be a more consistent AI which plays 
 
 Something I found while trying to practice and work out how to play better is that during the beginning and mid-game, it’s difficult to know how well you’re playing, as there’s no clear metric \- sometimes it’s better to have more counters of your colour, but sometimes it’s beneficial to have less so you have more moves available. To rectify this, I’d suggest adding a ‘confidence rating’ for the AI, which is changed every move and reflects how well the AI ‘thinks’ it’s doing and how likely it is to win.
 
-### 4.3.1 Conclusions on Feedback {#4.3.1-conclusions-on-feedback}
+### 4.3.1 Conclusions on Feedback
 
 These are fair comments, and I’m encouraged that the AI’s imperfections during play can be beneficial to a user. As for an average player, taking advantage of someone’s mistakes is an important part of the game. However, Neev does agree with me that the AI could be improved to be a more consistent opponent, and I’d take that into consideration were I to do the project again. I do understand his desire for some animation on the board, but under these circumstances and having made the game in console, I think it would’ve been outside the scope of this project and my time was better spent in other ways working on the project as it is. His comment about a confidence rating is a clever suggestion \- the aim of the program is to help players improve their Othello strategy and skills, so telling the player how well they’re doing at any given point would allow them to modify their gameplay appropriately to maximise their gains in game.
 
-## 4.4 System Improvements {#4.4-system-improvements}
+## 4.4 System Improvements
 
 As mentioned throughout my evaluation, the main improvement I would make to the system would be to try making the AI in different ways. I considered Alpha-Beta pruning earlier in the development of the game, and I would revisit that idea along with Monte-Carlo Tree Searching and perhaps other methods like random sampling (taking each move and playing randomised games from that state, taking the one with the best win percentage as best) which I could rank alongside each other to create more levels of AI for players to practise against as they progress, while speeding up the time it takes to evaluate a move by making the AI less resource-intensive. 
 
